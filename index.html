@@ -1,1222 +1,957 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HabitFlow — Build Habits That Stick</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<style>
-/* ══ RESET & TOKENS ══ */
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IronForge — Elite Fitness Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #F97316;
+      --orange-light: #FB923C;
+      --orange-dark: #EA580C;
+      --bg: #060608;
+      --bg-2: #0d0d12;
+      --surface: #141420;
+      --surface-2: #1a1a28;
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+      --border: rgba(249,115,22,0.18);
+      --border-subtle: rgba(255,255,255,0.06);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; color-scheme: dark; }
+    body { background: var(--bg); color: var(--text); font-family: 'Barlow', sans-serif; overflow-x: hidden; line-height: 1.6; }
+    h1,h2,h3,h4,h5 { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase; }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--orange-dark); border-radius: 4px; }
 
-:root{
-  /* Skill-recommended palette: Mental Health + Wellness pastel */
-  --bg:        #FAF5FF;
-  --bg2:       #FDF2F8;
-  --white:     #FFFFFF;
-  --purple:    #A855F7;
-  --purple-s:  #7C3AED;
-  --purple-l:  #E9D5FF;
-  --purple-xl: #F3E8FF;
-  --pink:      #EC4899;
-  --pink-l:    #FBCFE8;
-  --pink-xl:   #FDF2F8;
-  --green:     #10B981;
-  --green-l:   #D1FAE5;
-  --peach:     #FB923C;
-  --peach-l:   #FED7AA;
-  --blue:      #60A5FA;
-  --blue-l:    #DBEAFE;
-  --yellow:    #FBBF24;
-  --yellow-l:  #FEF3C7;
-  --text:      #3B1764;
-  --muted:     #7C5B9B;
-  --border:    #E9D5FF;
-  /* Skill-recommended claymorphism shadows */
-  --clay: 4px 4px 12px rgba(168,85,247,.12), -2px -2px 8px rgba(255,255,255,.9), inset 0 1px 0 rgba(255,255,255,.8);
-  --clay-hover: 6px 6px 18px rgba(168,85,247,.2), -2px -2px 10px rgba(255,255,255,.95), inset 0 1px 0 rgba(255,255,255,.9);
-  --clay-press: inset 2px 2px 8px rgba(168,85,247,.15), inset -2px -2px 6px rgba(255,255,255,.7);
-  --r: 20px; --r-sm: 14px; --r-lg: 28px;
-}
+    /* ===== ANIMATED BG ORBS ===== */
+    .bg-orbs {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none;
+    }
+    .orb-1 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(249,115,22,0.18) 0%, transparent 70%);
+      top: -250px; left: 50%; transform: translateX(-50%);
+      animation: orb1 14s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(234,88,12,0.13) 0%, transparent 70%);
+      bottom: 5%; right: -150px;
+      animation: orb2 18s ease-in-out infinite;
+    }
+    .orb-3 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 70%);
+      bottom: 25%; left: -120px;
+      animation: orb3 22s ease-in-out infinite;
+    }
+    .orb-4 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(252,211,77,0.08) 0%, transparent 70%);
+      top: 40%; left: 30%;
+      animation: orb4 28s ease-in-out infinite;
+    }
+    @keyframes orb1 {
+      0%,100% { transform: translateX(-50%) translateY(0) scale(1); opacity:0.8; }
+      33%  { transform: translateX(-40%) translateY(-60px) scale(1.2); opacity:1; }
+      66%  { transform: translateX(-60%) translateY(40px) scale(0.85); opacity:0.6; }
+    }
+    @keyframes orb2 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(-80px,-60px) scale(1.3); }
+    }
+    @keyframes orb3 {
+      0%,100% { transform: translate(0,0) scale(1); opacity:0.7; }
+      50% { transform: translate(60px,-50px) scale(1.2); opacity:1; }
+    }
+    @keyframes orb4 {
+      0%,100% { transform: translate(0,0) scale(1); opacity:0.5; }
+      33% { transform: translate(80px,40px) scale(1.4); opacity:0.8; }
+      66% { transform: translate(-50px,80px) scale(0.7); opacity:0.3; }
+    }
 
-html{scroll-behavior:smooth}
-body{
-  font-family:'Nunito',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overflow-x:hidden;
-  line-height:1.6;
-}
+    /* ===== MOVING GRID ===== */
+    .site-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(249,115,22,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249,115,22,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 30s linear infinite;
+    }
+    @keyframes gridMove {
+      from { background-position: 0 0; }
+      to   { background-position: 60px 60px; }
+    }
 
-/* ══ SCROLL BAR (thin, pastel) ══ */
-#sb{
-  position:fixed;top:0;left:0;height:3px;width:0%;
-  background:linear-gradient(90deg,var(--purple),var(--pink),var(--peach));
-  z-index:300;border-radius:0 2px 2px 0;
-  transition:width .08s linear;
-}
+    /* Everything above the bg layers */
+    body > *:not(.bg-orbs):not(.site-grid) { position: relative; z-index: 1; }
 
-/* ══ NAV ══ */
-nav{
-  position:fixed;top:12px;left:50%;transform:translateX(-50%);
-  z-index:100;width:calc(100% - 32px);max-width:1100px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 22px;
-  background:rgba(250,245,255,.85);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:2px solid rgba(233,213,255,.6);
-  border-radius:100px;
-  box-shadow:var(--clay);
-  transition:box-shadow .3s;
-}
-.nav-logo{
-  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.3rem;
-  color:var(--purple);letter-spacing:.01em;display:flex;align-items:center;gap:8px;
-}
-.nav-logo-icon{
-  width:32px;height:32px;border-radius:10px;
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 8px rgba(168,85,247,.35);
-}
-.nav-links{display:flex;gap:24px;list-style:none}
-.nav-links a{
-  color:var(--muted);font-size:.88rem;font-weight:600;
-  text-decoration:none;cursor:pointer;
-  transition:color .2s;
-}
-.nav-links a:hover{color:var(--purple)}
-.nav-links a.on{color:var(--purple)}
-.nbtn{
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  color:#fff;border:none;padding:10px 22px;
-  border-radius:100px;font-family:'Nunito',sans-serif;
-  font-weight:700;font-size:.88rem;cursor:pointer;
-  box-shadow:0 4px 14px rgba(168,85,247,.4);
-  transition:transform .2s,box-shadow .2s;
-}
-.nbtn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(168,85,247,.45)}
-.nbtn:active{transform:translateY(0)}
+    /* ===== NAV ===== */
+    nav {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 100; display: flex; align-items: center; gap: 8px;
+      padding: 12px 24px;
+      background: rgba(6,6,8,0.9); backdrop-filter: blur(28px);
+      border: 1px solid var(--border); border-radius: 100px;
+      width: min(92%, 720px);
+    }
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 900;
+      font-size: 1.3rem; letter-spacing: 0.12em; text-transform: uppercase;
+      background: linear-gradient(135deg, var(--orange), var(--orange-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      flex: 1;
+    }
+    .nav-links { display: flex; gap: 2px; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.78rem;
+      font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 7px 14px; border-radius: 100px; transition: all 200ms;
+    }
+    .nav-links a:hover { color: var(--text); background: rgba(249,115,22,0.1); }
+    .nav-cta { background: var(--orange) !important; color: #000 !important; font-weight: 700 !important; }
+    .nav-cta:hover { background: var(--orange-light) !important; }
 
-/* ══ HERO ══ */
-#hero{
-  min-height:100vh;
-  display:flex;align-items:center;
-  padding:100px 24px 60px;
-  position:relative;overflow:hidden;
-}
-/* Soft bg blobs */
-.hero-blob{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;animation:blobDrift ease-in-out infinite}
-.hb1{width:500px;height:500px;background:rgba(233,213,255,.55);top:-10%;left:-8%;animation-duration:20s}
-.hb2{width:400px;height:400px;background:rgba(251,207,232,.5);bottom:5%;right:-5%;animation-duration:26s;animation-direction:reverse}
-.hb3{width:300px;height:300px;background:rgba(209,250,229,.4);top:50%;left:40%;animation-duration:18s;animation-delay:-8s}
-@keyframes blobDrift{
-  0%,100%{transform:translate(0,0) scale(1)}
-  33%{transform:translate(30px,-40px) scale(1.05)}
-  66%{transform:translate(-20px,30px) scale(.95)}
-}
+    /* ===== HERO ===== */
+    #hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 120px 24px 80px; position: relative; overflow: hidden;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px;
+      background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.3);
+      border-radius: 100px; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange-light);
+      margin-bottom: 28px; opacity: 0; transform: translateY(20px);
+    }
+    .pulse-dot {
+      width: 6px; height: 6px; background: var(--orange); border-radius: 50%;
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.75); }
+    }
+    .hero-title {
+      font-size: clamp(3.8rem, 12vw, 10.5rem); line-height: 0.88;
+      letter-spacing: -0.03em; opacity: 0; transform: translateY(50px); margin-bottom: 8px;
+    }
+    .hero-title .l1 { display: block; color: var(--text); }
+    .hero-title .l2 {
+      display: block;
+      background: linear-gradient(135deg, #F97316 0%, #FB923C 40%, #FCD34D 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 40px rgba(249,115,22,0.55));
+    }
+    .hero-title .l3 { display: block; color: var(--text-dim); }
+    .hero-subtitle {
+      font-size: 1.1rem; color: var(--text-muted); max-width: 480px;
+      line-height: 1.75; opacity: 0; transform: translateY(20px); margin: 28px auto 44px;
+    }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; opacity: 0; transform: translateY(20px); }
+    .btn-primary {
+      padding: 15px 34px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      color: white; font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase;
+      border: none; border-radius: 10px; cursor: pointer; transition: all 250ms;
+      box-shadow: 0 0 40px rgba(249,115,22,0.3);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 64px rgba(249,115,22,0.6); }
+    .btn-secondary {
+      padding: 15px 34px; background: transparent; color: var(--text);
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase;
+      border: 1px solid var(--border-subtle); border-radius: 10px; cursor: pointer; transition: all 250ms;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-secondary:hover { border-color: var(--orange); color: var(--orange); background: rgba(249,115,22,0.06); }
+    .hero-stats { display: flex; gap: 56px; margin-top: 80px; padding-top: 48px; border-top: 1px solid var(--border-subtle); opacity: 0; }
+    .hero-stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2.6rem; font-weight: 900; background: linear-gradient(135deg, var(--orange), var(--orange-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-stat-label { font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px; }
+    .scroll-cue { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .scroll-cue span { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); opacity: 0.5; }
+    .scroll-line { width: 1px; height: 44px; background: linear-gradient(to bottom, var(--orange), transparent); animation: scrollAnim 1.6s ease-in-out infinite; }
+    @keyframes scrollAnim {
+      0% { transform: scaleY(0); transform-origin: top; }
+      49% { transform: scaleY(1); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
 
-.hero-inner{
-  max-width:1100px;margin:0 auto;width:100%;
-  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
-  position:relative;z-index:1;
-}
-.hero-text{animation:fadeUp .8s .1s both}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:6px 14px;border-radius:100px;
-  background:var(--purple-xl);border:2px solid var(--purple-l);
-  font-size:.75rem;font-weight:700;color:var(--purple);
-  letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px;
-}
-.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 6px rgba(16,185,129,0)}}
-h1{
-  font-family:'Fredoka',sans-serif;font-size:clamp(2.6rem,5vw,4rem);
-  font-weight:700;line-height:1.1;letter-spacing:-.01em;
-  margin-bottom:20px;color:var(--text);
-}
-.h1-accent{
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-sub{
-  font-size:1.05rem;color:var(--muted);line-height:1.7;
-  max-width:440px;margin-bottom:36px;font-weight:400;
-}
-.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
-.btn-primary{
-  display:inline-flex;align-items:center;gap:8px;
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  color:#fff;border:none;padding:14px 28px;border-radius:100px;
-  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
-  cursor:pointer;text-decoration:none;
-  box-shadow:0 4px 20px rgba(168,85,247,.4);
-  transition:transform .2s,box-shadow .2s;
-}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(168,85,247,.5)}
-.btn-primary:active{transform:translateY(-1px)}
-.btn-outline{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--white);color:var(--purple);
-  border:2px solid var(--purple-l);padding:12px 24px;border-radius:100px;
-  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
-  cursor:pointer;text-decoration:none;
-  box-shadow:var(--clay);
-  transition:transform .2s,box-shadow .2s,border-color .2s;
-}
-.btn-outline:hover{transform:translateY(-2px);box-shadow:var(--clay-hover);border-color:var(--purple)}
-.hero-social{margin-top:24px;display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.82rem;font-weight:500}
-.avatar-stack{display:flex}
-.avatar{width:28px;height:28px;border-radius:50%;border:2px solid var(--white);margin-left:-8px;font-size:.6rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center}
-.avatar:first-child{margin-left:0}
+    /* ===== MARQUEE ===== */
+    .marquee-wrap { padding: 48px 0; overflow: hidden; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); }
+    .marquee-track { display: flex; gap: 64px; animation: marqueeScroll 22s linear infinite; white-space: nowrap; }
+    .marquee-track:hover { animation-play-state: paused; }
+    .marquee-item { font-family: 'Barlow Condensed', sans-serif; font-size: 1.05rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim); display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+    .m-dot { width: 5px; height: 5px; background: var(--orange); border-radius: 50%; }
+    @keyframes marqueeScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-/* ── Hero demo card ── */
-.hero-demo{animation:fadeUp .8s .3s both;position:relative}
-.demo-card{
-  background:var(--white);border:2px solid var(--border);
-  border-radius:var(--r-lg);padding:28px;
-  box-shadow:var(--clay);
-  position:relative;overflow:hidden;
-}
-.demo-card::before{
-  content:'';position:absolute;top:-30px;right:-30px;
-  width:120px;height:120px;
-  background:radial-gradient(circle,rgba(233,213,255,.8),transparent 70%);
-  border-radius:50%;
-}
-.demo-header{
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;
-}
-.demo-title{font-family:'Fredoka',sans-serif;font-size:1.1rem;font-weight:600;color:var(--text)}
-.demo-date{font-size:.78rem;color:var(--muted);font-weight:500;background:var(--purple-xl);padding:4px 10px;border-radius:100px}
+    /* ===== SECTION HELPERS ===== */
+    .section-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .section-label::before { content: ''; width: 22px; height: 2px; background: var(--orange); flex-shrink: 0; }
+    .section-title { font-size: clamp(2.4rem, 6vw, 5rem); line-height: 0.93; margin-bottom: 16px; }
+    .section-subtitle { font-size: 1.05rem; color: var(--text-muted); max-width: 560px; line-height: 1.7; }
+    .reveal { opacity: 0; transform: translateY(32px); }
 
-/* Week dots */
-.week-row{display:flex;gap:6px;margin-bottom:20px}
-.week-dot{
-  flex:1;aspect-ratio:1;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.65rem;font-weight:700;color:var(--muted);
-  background:var(--bg);border:2px solid var(--border);
-  transition:all .25s cubic-bezier(.34,1.56,.64,1);
-  cursor:default;
-}
-.week-dot.done{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 2px 8px rgba(168,85,247,.4)}
-.week-dot.today{border-color:var(--purple);color:var(--purple);font-weight:800}
+    /* ===== EXPLORER ===== */
+    #explorer { padding: 120px 0; }
+    .explorer-inner { max-width: 1440px; margin: 0 auto; padding: 0 32px; }
+    .explorer-header { text-align: center; margin-bottom: 72px; }
+    .explorer-layout { display: grid; grid-template-columns: 1fr 400px 1fr; gap: 40px; align-items: start; }
+    .side-panel { display: flex; flex-direction: column; gap: 10px; padding-top: 90px; }
+    .view-toggle { display: flex; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 100px; margin-bottom: 16px; }
+    .view-btn { padding: 8px 22px; border: none; background: transparent; color: var(--text-muted); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 100px; cursor: pointer; transition: all 200ms; }
+    .view-btn.active { background: var(--orange); color: white; }
 
-/* Habit rows */
-.habits-list{display:flex;flex-direction:column;gap:10px}
-.habit-row{
-  display:flex;align-items:center;gap:14px;
-  padding:14px 16px;border-radius:var(--r-sm);
-  background:var(--bg);border:2px solid transparent;
-  cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);
-  user-select:none;
-}
-.habit-row:hover{border-color:var(--border);transform:translateX(4px)}
-.habit-row.checked{
-  background:var(--purple-xl);border-color:var(--purple-l);
-  transform:translateX(4px);
-}
-.habit-check{
-  width:26px;height:26px;border-radius:50%;border:2.5px solid var(--border);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  transition:all .25s cubic-bezier(.34,1.56,.64,1);
-  background:var(--white);
-}
-.habit-row.checked .habit-check{
-  background:var(--purple);border-color:var(--purple);
-  box-shadow:0 2px 10px rgba(168,85,247,.4);
-  animation:checkPop .35s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes checkPop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
-.habit-check svg{opacity:0;transition:opacity .15s}
-.habit-row.checked .habit-check svg{opacity:1}
-.habit-info{flex:1}
-.habit-name{font-weight:600;font-size:.9rem;color:var(--text);transition:color .2s}
-.habit-row.checked .habit-name{color:var(--purple-s)}
-.habit-meta{font-size:.74rem;color:var(--muted);margin-top:2px;font-weight:500}
-.habit-icon{
-  width:36px;height:36px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-size:.9rem;
-}
-.habit-streak{
-  font-size:.72rem;font-weight:700;color:var(--peach);
-  background:var(--peach-l);padding:3px 8px;border-radius:100px;
-  display:flex;align-items:center;gap:3px;white-space:nowrap;
-}
+    /* ===== BODY SVG ===== */
+    .body-container { display: flex; flex-direction: column; align-items: center; }
+    .body-wrap { position: relative; width: 380px; height: 700px; animation: bodyFloat 3.5s ease-in-out infinite; }
+    @keyframes bodyFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+    .body-wrap svg { width: 100%; height: 100%; overflow: visible; }
 
-/* Progress bar at bottom */
-.demo-progress{margin-top:20px;padding-top:16px;border-top:2px solid var(--border)}
-.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.progress-text{font-size:.8rem;font-weight:700;color:var(--text)}
-.progress-pct{font-size:.8rem;font-weight:700;color:var(--purple)}
-.progress-bar{height:10px;border-radius:100px;background:var(--purple-xl);overflow:hidden}
-.progress-fill{
-  height:100%;border-radius:100px;
-  background:linear-gradient(90deg,var(--purple),var(--pink));
-  transition:width .6s cubic-bezier(.16,1,.3,1);
-  box-shadow:0 2px 6px rgba(168,85,247,.35);
-  width:0%;
-}
+    /* Body base parts — mannequin look */
+    .bb {
+      fill: #1c1c2a;
+      stroke: rgba(255,255,255,0.09);
+      stroke-width: 0.8;
+      filter: drop-shadow(0 4px 24px rgba(0,0,0,0.5));
+    }
 
-/* Floating badge on card */
-.streak-badge{
-  position:absolute;top:-14px;right:20px;
-  background:linear-gradient(135deg,var(--peach),var(--yellow));
-  color:#fff;font-family:'Fredoka',sans-serif;font-weight:600;font-size:.82rem;
-  padding:6px 14px;border-radius:100px;
-  box-shadow:0 4px 12px rgba(251,146,60,.4);
-  display:flex;align-items:center;gap:5px;
-  animation:float 3s ease-in-out infinite;
-}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    /* Glossy shine overlay on body */
+    .bs { fill: url(#bodyShine); pointer-events: none; }
 
-/* Confetti container */
-#confetti-container{position:fixed;inset:0;pointer-events:none;z-index:500;overflow:hidden}
-.confetti-piece{
-  position:absolute;width:8px;height:8px;border-radius:2px;
-  animation:confettiFall linear forwards;
-  pointer-events:none;
-}
-@keyframes confettiFall{
-  0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
-  100%{transform:translate(var(--dx),100vh) rotate(var(--rot)) scale(.5);opacity:0}
-}
+    /* Muscle regions — invisible by default, reveal on hover/active */
+    .mr {
+      fill: transparent;
+      stroke: transparent;
+      stroke-width: 0;
+      cursor: pointer;
+      transition: fill 200ms, stroke 200ms, filter 200ms;
+    }
+    .mr:hover {
+      fill: rgba(249,115,22,0.45);
+      stroke: rgba(249,115,22,0.85);
+      stroke-width: 1.5;
+      filter: drop-shadow(0 0 10px rgba(249,115,22,0.65));
+    }
+    .mr.active {
+      fill: rgba(249,115,22,0.42);
+      stroke: #F97316;
+      stroke-width: 2;
+      animation: musclePulse 2.2s ease-in-out infinite;
+    }
+    @keyframes musclePulse {
+      0%,100% { fill: rgba(249,115,22,0.42); filter: drop-shadow(0 0 10px rgba(249,115,22,0.6)); }
+      50%      { fill: rgba(249,115,22,0.62); filter: drop-shadow(0 0 20px rgba(249,115,22,0.95)); }
+    }
+    @keyframes muscleFlash {
+      0%  { fill: rgba(249,115,22,0.85); filter: drop-shadow(0 0 24px rgba(249,115,22,1)); }
+      100%{ fill: rgba(249,115,22,0.42); filter: drop-shadow(0 0 10px rgba(249,115,22,0.6)); }
+    }
+    .mr.flash { animation: muscleFlash 0.35s ease-out forwards; }
 
-/* ══ MARQUEE ══ */
-.mq-wrap{
-  overflow:hidden;padding:16px 0;
-  border-top:2px solid var(--border);border-bottom:2px solid var(--border);
-  background:var(--white);position:relative;z-index:2;
-}
-.mq-track{display:flex;white-space:nowrap;animation:mq 30s linear infinite}
-.mq-wrap:hover .mq-track{animation-play-state:paused}
-@keyframes mq{to{transform:translateX(-50%)}}
-.mq-item{
-  display:inline-flex;align-items:center;gap:10px;padding:0 28px;
-  font-family:'Fredoka',sans-serif;font-weight:500;font-size:.9rem;
-  color:var(--muted);letter-spacing:.02em;
-}
-.mq-dot{width:5px;height:5px;border-radius:50%;background:var(--purple-l);flex-shrink:0}
+    .body-hint { font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 14px; text-align: center; display: flex; align-items: center; gap: 8px; }
+    .body-hint::before, .body-hint::after { content: ''; flex: 1; height: 1px; background: var(--border-subtle); }
 
-/* ══ SECTION SHARED ══ */
-section{position:relative;z-index:2}
-.section-wrap{max-width:1100px;margin:0 auto;padding:0 24px}
-.section-head{text-align:center;margin-bottom:56px}
-.stag{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:5px 14px;border-radius:100px;margin-bottom:14px;
-  background:var(--purple-xl);border:2px solid var(--purple-l);
-  font-size:.72rem;font-weight:700;color:var(--purple);
-  letter-spacing:.08em;text-transform:uppercase;
-}
-h2{
-  font-family:'Fredoka',sans-serif;
-  font-size:clamp(1.8rem,4vw,2.8rem);
-  font-weight:700;line-height:1.1;color:var(--text);margin-bottom:12px;
-}
-.sub{color:var(--muted);font-size:.98rem;max-width:460px;margin:0 auto;line-height:1.65;font-weight:400}
+    /* Sidebar quick cards */
+    .muscle-quick-card { padding: 14px 18px; background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 12px; cursor: pointer; transition: all 200ms; }
+    .muscle-quick-card:hover, .muscle-quick-card.active { border-color: var(--orange); background: rgba(249,115,22,0.06); }
+    .mqc-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text); }
+    .mqc-sub { font-size: 0.72rem; color: var(--text-dim); margin-top: 1px; }
+    .muscle-quick-card.active .mqc-name { color: var(--orange); }
+    .mqc-badge { display: inline-block; margin-top: 6px; padding: 2px 8px; background: rgba(249,115,22,0.1); border-radius: 4px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange-light); }
 
-/* ══ FEATURES ══ */
-#features{padding:100px 0}
-.feat-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
-}
-.feat-card{
-  padding:36px 28px;
-  background:var(--white);border:2px solid var(--border);border-radius:var(--r);
-  box-shadow:var(--clay);
-  opacity:0;transform:translateY(40px);
-  transition:transform .3s,box-shadow .3s,border-color .3s;
-  cursor:default;
-}
-.feat-card:hover{
-  transform:translateY(-6px) !important;
-  box-shadow:var(--clay-hover);border-color:var(--purple-l);
-}
-.feat-icon{
-  width:52px;height:52px;border-radius:16px;
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:20px;
-  box-shadow:var(--clay);border:2px solid var(--white);
-}
-.feat-card h3{font-family:'Fredoka',sans-serif;font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:10px}
-.feat-card p{color:var(--muted);font-size:.88rem;line-height:1.68;font-weight:400}
+    /* ===== PANEL ===== */
+    .overlay { position: fixed; inset: 0; z-index: 200; pointer-events: none; display: flex; }
+    .overlay-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(12px); opacity: 0; transition: opacity 400ms; pointer-events: none; cursor: pointer; }
+    .overlay-panel { position: absolute; right: 0; top: 0; bottom: 0; width: min(92vw, 720px); background: var(--bg-2); border-left: 1px solid var(--border); transform: translateX(100%); transition: transform 480ms cubic-bezier(0.16,1,0.3,1); overflow-y: auto; pointer-events: all; }
+    .overlay.open { pointer-events: all; }
+    .overlay.open .overlay-backdrop { opacity: 1; pointer-events: all; }
+    .overlay.open .overlay-panel { transform: translateX(0); }
+    .panel-header { position: sticky; top: 0; z-index: 10; padding: 24px 32px; background: var(--bg-2); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; }
+    .panel-close { width: 38px; height: 38px; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-muted); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 200ms; flex-shrink: 0; }
+    .panel-close:hover { border-color: var(--orange); color: var(--orange); }
+    .panel-content { padding: 32px; }
+    .panel-title { font-size: 2.2rem; }
+    .muscle-diagram { width: 100%; height: 180px; background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 16px; margin-bottom: 28px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+    .diagram-glow { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(249,115,22,0.1) 0%, transparent 70%); pointer-events: none; }
+    .head-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .head-tab { padding: 9px 20px; background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 100px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); cursor: pointer; transition: all 200ms; }
+    .head-tab:hover { border-color: var(--orange); color: var(--orange-light); }
+    .head-tab.active { background: var(--orange); border-color: var(--orange); color: white; }
+    .exercises-label { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border-subtle); }
+    .exercise-card { display: flex; gap: 16px; align-items: flex-start; padding: 16px; background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 12px; margin-bottom: 10px; transition: all 220ms; cursor: pointer; }
+    .exercise-card:hover { border-color: var(--orange); background: rgba(249,115,22,0.04); transform: translateX(4px); }
+    .ex-num { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; font-weight: 900; color: rgba(249,115,22,0.2); line-height: 1; min-width: 32px; }
+    .ex-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text); margin-bottom: 6px; }
+    .ex-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+    .ex-tag { font-size: 0.66rem; font-weight: 700; padding: 2px 8px; border-radius: 5px; letter-spacing: 0.07em; text-transform: uppercase; }
+    .t-sets { background: rgba(249,115,22,0.12); color: #FB923C; }
+    .t-reps { background: rgba(34,197,94,0.1); color: #4ADE80; }
+    .t-lvl  { background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid var(--border-subtle); }
+    .ex-desc { font-size: 0.8rem; color: var(--text-dim); line-height: 1.55; }
 
-/* ══ HOW IT WORKS ══ */
-#how{padding:80px 0;background:var(--bg2)}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative}
-.steps::before{
-  content:'';position:absolute;top:40px;left:calc(16.67% + 20px);right:calc(16.67% + 20px);
-  height:2px;background:linear-gradient(90deg,var(--purple-l),var(--pink-l));
-  border-radius:2px;
-}
-.step{text-align:center;padding:32px 20px;opacity:0;transform:translateY(40px)}
-.step-num{
-  width:56px;height:56px;border-radius:50%;
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  color:#fff;font-family:'Fredoka',sans-serif;font-size:1.3rem;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 20px;
-  box-shadow:0 4px 14px rgba(168,85,247,.4);
-  position:relative;z-index:1;
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
-}
-.step:hover .step-num{transform:scale(1.15)}
-.step h3{font-family:'Fredoka',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:8px;color:var(--text)}
-.step p{color:var(--muted);font-size:.87rem;line-height:1.65;font-weight:400}
+    /* ===== PLANS ===== */
+    #plans { padding: 120px 24px; }
+    .plans-inner { max-width: 1400px; margin: 0 auto; }
+    .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 60px; }
+    .plan-card { background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 32px; transition: all 300ms; position: relative; overflow: hidden; }
+    .plan-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--orange), var(--orange-light)); transform: scaleX(0); transform-origin: left; transition: transform 400ms cubic-bezier(0.16,1,0.3,1); }
+    .plan-card:hover { border-color: rgba(249,115,22,0.2); transform: translateY(-5px); box-shadow: 0 24px 64px rgba(0,0,0,0.5); }
+    .plan-card:hover::before { transform: scaleX(1); }
+    .plan-icon { width: 48px; height: 48px; background: rgba(249,115,22,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .plan-icon svg { width: 24px; height: 24px; color: var(--orange); }
+    .plan-name { font-size: 1.5rem; letter-spacing: 0.02em; margin-bottom: 8px; }
+    .plan-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 20px; }
+    .plan-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+    .plan-tag { font-size: 0.68rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(255,255,255,0.04); color: var(--text-dim); border: 1px solid var(--border-subtle); }
+    .plan-days { display: flex; gap: 5px; margin-bottom: 24px; }
+    .plan-day { flex: 1; height: 4px; background: var(--surface-2); border-radius: 4px; }
+    .plan-day.on { background: linear-gradient(90deg, var(--orange), var(--orange-light)); }
+    .plan-btn { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border-subtle); color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.09em; text-transform: uppercase; border-radius: 10px; cursor: pointer; transition: all 200ms; }
+    .plan-btn:hover { background: rgba(249,115,22,0.1); border-color: var(--orange); color: var(--orange); }
 
-/* ══ STATS ══ */
-#stats{padding:80px 0}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.stat-card{
-  padding:32px 20px;text-align:center;
-  background:var(--white);border:2px solid var(--border);border-radius:var(--r);
-  box-shadow:var(--clay);opacity:0;transform:translateY(30px);
-  transition:transform .3s,box-shadow .3s;cursor:default;
-}
-.stat-card:hover{transform:translateY(-4px) !important;box-shadow:var(--clay-hover)}
-.stat-num{
-  font-family:'Fredoka',sans-serif;font-size:2.6rem;font-weight:700;
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  line-height:1;
-}
-.stat-sfx{font-size:2rem}
-.stat-lbl{color:var(--muted);font-size:.8rem;font-weight:600;margin-top:8px;text-transform:uppercase;letter-spacing:.06em}
+    /* ===== STATS ===== */
+    #stats { padding: 100px 24px; text-align: center; }
+    .stats-inner { max-width: 1000px; margin: 0 auto; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; margin-top: 60px; }
+    .stat-card { padding: 36px 20px; background: var(--surface); border: 1px solid var(--border-subtle); border-radius: 18px; transition: all 300ms; }
+    .stat-card:hover { border-color: rgba(249,115,22,0.2); box-shadow: 0 0 40px rgba(249,115,22,0.07); }
+    .stat-value { font-family: 'Barlow Condensed', sans-serif; font-size: 3.5rem; font-weight: 900; line-height: 1; background: linear-gradient(135deg, var(--orange), var(--orange-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-label { font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 8px; }
 
-/* ══ DEMO INTERACTIVE ══ */
-#demo{padding:100px 0}
-.demo-section-inner{
-  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
-}
-.demo-text{opacity:0;transform:translateX(-40px)}
-.demo-text h2{text-align:left;margin-bottom:16px}
-.demo-text .sub{text-align:left;margin:0 0 28px}
-.demo-features{display:flex;flex-direction:column;gap:14px}
-.demo-feat{
-  display:flex;align-items:center;gap:14px;
-  padding:14px 18px;border-radius:var(--r-sm);
-  background:var(--white);border:2px solid var(--border);
-  box-shadow:var(--clay);
-  transition:border-color .25s,transform .25s;
-}
-.demo-feat:hover{border-color:var(--purple-l);transform:translateX(4px)}
-.demo-feat-icon{
-  width:38px;height:38px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.demo-feat-text{font-weight:600;font-size:.88rem;color:var(--text)}
-.demo-feat-desc{font-size:.78rem;color:var(--muted);font-weight:400}
+    /* ===== CTA ===== */
+    #cta { padding: 120px 24px; text-align: center; }
+    .cta-inner { max-width: 820px; margin: 0 auto; position: relative; }
+    .cta-glow { position: absolute; inset: -120px; background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(249,115,22,0.12) 0%, transparent 70%); pointer-events: none; }
+    .cta-box { position: relative; padding: 88px 64px; background: var(--surface); border: 1px solid var(--border); border-radius: 28px; overflow: hidden; }
+    .cta-box::before { content: ''; position: absolute; top: 0; left: 12%; right: 12%; height: 1px; background: linear-gradient(90deg, transparent, var(--orange), transparent); }
+    .cta-title { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 0.93; margin-bottom: 20px; }
+    .cta-sub { font-size: 1rem; color: var(--text-muted); margin-bottom: 44px; }
 
-/* Big interactive ring */
-.ring-demo{
-  opacity:0;transform:translateX(40px);
-  display:flex;flex-direction:column;align-items:center;gap:24px;
-}
-.ring-wrap{position:relative;width:200px;height:200px}
-.ring-svg{transform:rotate(-90deg)}
-.ring-bg{fill:none;stroke:var(--purple-xl);stroke-width:14}
-.ring-fill{
-  fill:none;stroke-width:14;stroke-linecap:round;
-  stroke:url(#ringGrad);
-  stroke-dasharray:565;stroke-dashoffset:565;
-  transition:stroke-dashoffset 1s cubic-bezier(.16,1,.3,1);
-}
-.ring-label{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  text-align:center;
-}
-.ring-pct{font-family:'Fredoka',sans-serif;font-size:2rem;font-weight:700;color:var(--purple);display:block}
-.ring-sub{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
-.mini-habits{display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px}
-.mini-habit{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 14px;border-radius:var(--r-sm);
-  background:var(--white);border:2px solid var(--border);
-  box-shadow:var(--clay);cursor:pointer;
-  transition:all .25s cubic-bezier(.34,1.56,.64,1);
-}
-.mini-habit:hover{border-color:var(--purple-l);transform:scale(1.02)}
-.mini-habit.done{background:var(--purple-xl);border-color:var(--purple-l)}
-.mh-left{display:flex;align-items:center;gap:10px}
-.mh-name{font-weight:600;font-size:.85rem;color:var(--text)}
-.mh-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);transition:all .25s;background:var(--bg)}
-.mini-habit.done .mh-dot{background:var(--purple);border-color:var(--purple);box-shadow:0 0 0 3px rgba(168,85,247,.2)}
-.mh-bar-wrap{width:60px;height:5px;border-radius:100px;background:var(--purple-xl);overflow:hidden}
-.mh-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width .4s cubic-bezier(.16,1,.3,1)}
+    /* ===== FOOTER ===== */
+    footer { padding: 40px 24px; border-top: 1px solid var(--border-subtle); text-align: center; }
+    .footer-logo { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.6rem; letter-spacing: 0.12em; text-transform: uppercase; background: linear-gradient(135deg, var(--orange), var(--orange-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; }
+    .footer-copy { font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.05em; }
 
-/* ══ TESTIMONIALS ══ */
-#testimonials{padding:100px 0;background:var(--bg2)}
-.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.test-card{
-  padding:32px 26px;
-  background:var(--white);border:2px solid var(--border);border-radius:var(--r);
-  box-shadow:var(--clay);opacity:0;transform:translateY(40px);
-  transition:transform .3s,box-shadow .3s;cursor:default;
-}
-.test-card:hover{transform:translateY(-5px) !important;box-shadow:var(--clay-hover)}
-.test-stars{
-  display:flex;gap:3px;margin-bottom:14px;
-}
-.star{
-  width:16px;height:16px;
-  background:linear-gradient(135deg,var(--yellow),var(--peach));
-  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
-}
-.test-text{font-size:.88rem;line-height:1.72;color:var(--muted);margin-bottom:22px;font-weight:400;font-style:italic}
-.test-author{display:flex;align-items:center;gap:12px}
-.test-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
-.test-name{font-weight:700;font-size:.88rem;color:var(--text)}
-.test-role{font-size:.76rem;color:var(--muted);font-weight:400}
-
-/* ══ CTA ══ */
-#cta{padding:100px 0}
-.cta-card{
-  text-align:center;padding:80px 48px;
-  background:linear-gradient(135deg,var(--purple-xl),var(--pink-xl));
-  border:2px solid var(--purple-l);border-radius:var(--r-lg);
-  box-shadow:var(--clay);
-  opacity:0;transform:translateY(40px);
-  position:relative;overflow:hidden;
-}
-.cta-card::before{
-  content:'';position:absolute;top:-60px;right:-60px;
-  width:200px;height:200px;border-radius:50%;
-  background:radial-gradient(circle,rgba(233,213,255,.8),transparent 70%);
-}
-.cta-card::after{
-  content:'';position:absolute;bottom:-40px;left:-40px;
-  width:160px;height:160px;border-radius:50%;
-  background:radial-gradient(circle,rgba(251,207,232,.7),transparent 70%);
-}
-.cta-card h2{margin-bottom:14px;position:relative}
-.cta-card .sub{margin-bottom:36px;position:relative}
-.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
-.cta-stores{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-.store-btn{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:10px 18px;border-radius:12px;
-  background:rgba(255,255,255,.7);border:2px solid var(--border);
-  font-size:.8rem;font-weight:600;color:var(--text);cursor:pointer;
-  box-shadow:var(--clay);transition:transform .2s,box-shadow .2s;
-  text-decoration:none;
-}
-.store-btn:hover{transform:translateY(-2px);box-shadow:var(--clay-hover)}
-
-/* ══ FOOTER ══ */
-footer{
-  padding:48px 24px 32px;
-  border-top:2px solid var(--border);
-  background:var(--white);
-}
-.footer-inner{
-  max-width:1100px;margin:0 auto;
-  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;
-}
-.footer-copy{color:var(--muted);font-size:.82rem;font-weight:400}
-.footer-links{display:flex;gap:20px}
-.footer-links a{color:var(--muted);font-size:.82rem;text-decoration:none;cursor:pointer;transition:color .2s;font-weight:500}
-.footer-links a:hover{color:var(--purple)}
-
-/* ══ SCROLL ANIMATIONS ══ */
-.fade-up{opacity:0;transform:translateY(40px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
-.fade-left{opacity:0;transform:translateX(-40px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
-.fade-right{opacity:0;transform:translateX(40px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
-.visible{opacity:1 !important;transform:none !important}
-
-/* ══ RESPONSIVE ══ */
-@media(max-width:900px){
-  .hero-inner{grid-template-columns:1fr;gap:40px}
-  .hero-demo{order:-1}
-  .feat-grid{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr;gap:16px}
-  .steps::before{display:none}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .demo-section-inner{grid-template-columns:1fr;gap:40px}
-  .test-grid{grid-template-columns:1fr}
-  .nav-links{display:none}
-  .cta-card{padding:48px 24px}
-}
-
-/* ══ PREFERS-REDUCED-MOTION ══ */
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
-  .blob,.streak-badge{animation:none !important}
-}
-</style>
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1100px) { .explorer-layout { grid-template-columns: 1fr; } .side-panel { display: none; } .body-container { margin: 0 auto; } .body-wrap { width: 280px; height: 520px; } }
+    @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2,1fr); } .nav-links { display: none; } .hero-stats { gap: 24px; } .overlay-panel { width: 100vw; } .cta-box { padding: 52px 28px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+  </style>
 </head>
 <body>
 
-<div id="sb"></div>
-<div id="confetti-container" aria-hidden="true"></div>
+<!-- ANIMATED BACKGROUND -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+</div>
+<div class="site-grid"></div>
 
-<!-- Nav -->
-<nav id="nb" role="navigation" aria-label="Main navigation">
-  <div class="nav-logo">
-    <div class="nav-logo-icon" aria-hidden="true">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
-    </div>
-    HabitFlow
-  </div>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">IronForge</div>
   <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#how">How it works</a></li>
-    <li><a href="#demo">Demo</a></li>
-    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#explorer">Muscles</a></li>
+    <li><a href="#plans">Plans</a></li>
+    <li><a href="#stats">Stats</a></li>
+    <li><a href="#cta" class="nav-cta">Start Now</a></li>
   </ul>
-  <button class="nbtn" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Get started free</button>
 </nav>
 
-<!-- Hero -->
+<!-- HERO -->
 <section id="hero">
-  <div class="hero-blob hb1" aria-hidden="true"></div>
-  <div class="hero-blob hb2" aria-hidden="true"></div>
-  <div class="hero-blob hb3" aria-hidden="true"></div>
-
-  <div class="hero-inner">
-    <div class="hero-text">
-      <div class="hero-badge">
-        <span class="badge-dot" aria-hidden="true"></span>
-        Now with AI coaching
-      </div>
-      <h1>Build habits<br>that <span class="h1-accent">actually stick</span></h1>
-      <p class="hero-sub">Track your daily habits, celebrate streaks, and finally become the person you want to be — one small step at a time.</p>
-      <div class="hero-btns">
-        <a href="#cta" class="btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          Start for free
-        </a>
-        <a href="#demo" class="btn-outline">See it in action</a>
-      </div>
-      <div class="hero-social" aria-label="Social proof">
-        <div class="avatar-stack" aria-hidden="true">
-          <div class="avatar" style="background:linear-gradient(135deg,#A855F7,#EC4899)">A</div>
-          <div class="avatar" style="background:linear-gradient(135deg,#10B981,#60A5FA)">M</div>
-          <div class="avatar" style="background:linear-gradient(135deg,#FB923C,#FBBF24)">S</div>
-          <div class="avatar" style="background:linear-gradient(135deg,#EC4899,#A855F7)">J</div>
-        </div>
-        <span>Joined by <strong>40,000+</strong> people this month</span>
-      </div>
-    </div>
-
-    <!-- Interactive demo card -->
-    <div class="hero-demo">
-      <div class="streak-badge" aria-label="21 day streak">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
-        21 day streak!
-      </div>
-      <div class="demo-card">
-        <div class="demo-header">
-          <div class="demo-title">Today's Habits</div>
-          <div class="demo-date" id="demo-date">Monday</div>
-        </div>
-        <!-- Week -->
-        <div class="week-row" id="week-row" aria-label="Week progress">
-          <div class="week-dot done" aria-label="Monday done">M</div>
-          <div class="week-dot done" aria-label="Tuesday done">T</div>
-          <div class="week-dot done" aria-label="Wednesday done">W</div>
-          <div class="week-dot done" aria-label="Thursday done">T</div>
-          <div class="week-dot today" aria-label="Friday today">F</div>
-          <div class="week-dot" aria-label="Saturday">S</div>
-          <div class="week-dot" aria-label="Sunday">S</div>
-        </div>
-        <!-- Habits -->
-        <div class="habits-list" id="habits-list">
-          <div class="habit-row" role="checkbox" aria-checked="false" tabindex="0" data-habit="0">
-            <div class="habit-icon" style="background:var(--purple-xl)" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>
-            </div>
-            <div class="habit-info">
-              <div class="habit-name">Morning meditation</div>
-              <div class="habit-meta">10 min · Every day</div>
-            </div>
-            <div class="habit-streak" aria-label="21 day streak">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--peach)" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
-              21d
-            </div>
-            <div class="habit-check" aria-hidden="true">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
-            </div>
-          </div>
-          <div class="habit-row" role="checkbox" aria-checked="false" tabindex="0" data-habit="1">
-            <div class="habit-icon" style="background:var(--green-l)" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            </div>
-            <div class="habit-info">
-              <div class="habit-name">30 min exercise</div>
-              <div class="habit-meta">Fitness · Every day</div>
-            </div>
-            <div class="habit-streak" aria-label="14 day streak">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--peach)" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
-              14d
-            </div>
-            <div class="habit-check" aria-hidden="true">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
-            </div>
-          </div>
-          <div class="habit-row" role="checkbox" aria-checked="false" tabindex="0" data-habit="2">
-            <div class="habit-icon" style="background:var(--blue-l)" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            </div>
-            <div class="habit-info">
-              <div class="habit-name">Read 20 pages</div>
-              <div class="habit-meta">Learning · Every day</div>
-            </div>
-            <div class="habit-streak" aria-label="7 day streak">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--peach)" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
-              7d
-            </div>
-            <div class="habit-check" aria-hidden="true">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
-            </div>
-          </div>
-          <div class="habit-row" role="checkbox" aria-checked="false" tabindex="0" data-habit="3">
-            <div class="habit-icon" style="background:var(--peach-l)" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--peach)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            </div>
-            <div class="habit-info">
-              <div class="habit-name">Drink 2L water</div>
-              <div class="habit-meta">Health · Every day</div>
-            </div>
-            <div class="habit-streak" aria-label="5 day streak">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--peach)" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
-              5d
-            </div>
-            <div class="habit-check" aria-hidden="true">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
-            </div>
-          </div>
-        </div>
-        <div class="demo-progress">
-          <div class="progress-label">
-            <span class="progress-text">Daily progress</span>
-            <span class="progress-pct" id="progress-pct">0%</span>
-          </div>
-          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-fill" id="progress-fill"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="hero-badge"><span class="pulse-dot"></span>Elite Training System</div>
+  <h1 class="hero-title">
+    <span class="l1">Build Your</span>
+    <span class="l2">Perfect</span>
+    <span class="l3">Physique</span>
+  </h1>
+  <p class="hero-subtitle">Science-backed training with interactive 3D muscle exploration. Click any muscle — find the perfect exercise.</p>
+  <div class="hero-actions">
+    <a href="#explorer" class="btn-primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
+      Explore Muscles
+    </a>
+    <a href="#plans" class="btn-secondary">
+      View Programs
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
   </div>
+  <div class="hero-stats">
+    <div><div class="hero-stat-num">200+</div><div class="hero-stat-label">Exercises</div></div>
+    <div><div class="hero-stat-num">18</div><div class="hero-stat-label">Muscle Groups</div></div>
+    <div><div class="hero-stat-num">12</div><div class="hero-stat-label">Programs</div></div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
 
-<!-- Marquee -->
-<div class="mq-wrap" aria-hidden="true">
-  <div class="mq-track">
-    <span class="mq-item">Daily streaks <span class="mq-dot"></span></span>
-    <span class="mq-item">Habit stacking <span class="mq-dot"></span></span>
-    <span class="mq-item">AI coaching <span class="mq-dot"></span></span>
-    <span class="mq-item">Progress charts <span class="mq-dot"></span></span>
-    <span class="mq-item">Smart reminders <span class="mq-dot"></span></span>
-    <span class="mq-item">Friend challenges <span class="mq-dot"></span></span>
-    <span class="mq-item">Weekly reviews <span class="mq-dot"></span></span>
-    <span class="mq-item">Daily streaks <span class="mq-dot"></span></span>
-    <span class="mq-item">Habit stacking <span class="mq-dot"></span></span>
-    <span class="mq-item">AI coaching <span class="mq-dot"></span></span>
-    <span class="mq-item">Progress charts <span class="mq-dot"></span></span>
-    <span class="mq-item">Smart reminders <span class="mq-dot"></span></span>
-    <span class="mq-item">Friend challenges <span class="mq-dot"></span></span>
-    <span class="mq-item">Weekly reviews <span class="mq-dot"></span></span>
+<!-- MARQUEE -->
+<div class="marquee-wrap"><div class="marquee-track" id="marqueeTrack"></div></div>
+
+<!-- BODY EXPLORER -->
+<div id="explorer">
+  <div class="explorer-inner">
+    <div class="explorer-header reveal">
+      <div class="section-label" style="justify-content:center">3D Muscle Explorer</div>
+      <h2 class="section-title">Click Your <span style="color:var(--orange)">Target</span> Muscle</h2>
+      <p class="section-subtitle" style="margin:0 auto;text-align:center">Hover over any muscle to see it light up. Click to explore targeted exercises for every muscle head.</p>
+    </div>
+    <div class="explorer-layout">
+      <div class="side-panel" id="leftPanel"></div>
+      <div class="body-container">
+        <div class="view-toggle">
+          <button class="view-btn active" onclick="setView('front')" id="btnFront">Front</button>
+          <button class="view-btn" onclick="setView('back')" id="btnBack">Back</button>
+        </div>
+        <div class="body-wrap" id="bodyWrap"></div>
+        <div class="body-hint">Hover to highlight · Click to explore</div>
+      </div>
+      <div class="side-panel" id="rightPanel"></div>
+    </div>
   </div>
 </div>
 
-<!-- Features -->
-<section id="features">
-  <div class="section-wrap">
-    <div class="section-head">
-      <div class="stag fade-up">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        Features
-      </div>
-      <h2 class="fade-up">Everything you need<br>to build great habits</h2>
-      <p class="sub fade-up">Simple, beautiful tools that make showing up every day feel rewarding — not like a chore.</p>
+<!-- PLANS -->
+<div id="plans">
+  <div class="plans-inner">
+    <div class="reveal">
+      <div class="section-label">Training Programs</div>
+      <h2 class="section-title">Choose Your <span style="color:var(--orange)">Path</span></h2>
+      <p class="section-subtitle">Structured programs designed for every goal — from raw strength to aesthetic conditioning.</p>
     </div>
-    <div class="feat-grid">
-      <div class="feat-card">
-        <div class="feat-icon" style="background:var(--purple-xl)" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
-        </div>
-        <h3>One-tap check-ins</h3>
-        <p>Mark habits done in a single tap. Satisfying animations celebrate every completion and keep you motivated to keep going.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon" style="background:var(--peach-l)" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--peach)" stroke-width="2"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
-        </div>
-        <h3>Streak tracking</h3>
-        <p>Watch your streaks grow day by day. Lose your streak and it resets — the perfect motivator to never miss a day again.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon" style="background:var(--green-l)" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        </div>
-        <h3>Progress insights</h3>
-        <p>Beautiful charts show your completion rates, best streaks, and patterns — helping you understand yourself better over time.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon" style="background:var(--blue-l)" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-        </div>
-        <h3>Smart reminders</h3>
-        <p>Gentle nudges at exactly the right time. HabitFlow learns when you're most likely to complete habits and reminds you then.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon" style="background:var(--yellow-l)" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <h3>Friend challenges</h3>
-        <p>Invite friends and compete on shared habits. A little friendly competition is the best accountability partner you'll ever have.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon" style="background:var(--pink-xl)" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-        </div>
-        <h3>AI coaching</h3>
-        <p>Get personalized advice based on your habit data. Your AI coach identifies patterns and suggests improvements unique to you.</p>
-      </div>
+    <div class="plans-grid" id="plansGrid"></div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stats-inner">
+    <div class="reveal">
+      <div class="section-label">By The Numbers</div>
+      <h2 class="section-title">Results That <span style="color:var(--orange)">Speak</span></h2>
+    </div>
+    <div class="stats-grid reveal">
+      <div class="stat-card"><div class="stat-value" data-target="200" data-suffix="+">0</div><div class="stat-label">Exercises</div></div>
+      <div class="stat-card"><div class="stat-value" data-target="18" data-suffix="">0</div><div class="stat-label">Muscle Groups</div></div>
+      <div class="stat-card"><div class="stat-value" data-target="12" data-suffix="">0</div><div class="stat-label">Programs</div></div>
+      <div class="stat-card"><div class="stat-value" data-target="50" data-suffix="K+">0</div><div class="stat-label">Athletes</div></div>
     </div>
   </div>
-</section>
-
-<!-- How it works -->
-<section id="how">
-  <div class="section-wrap">
-    <div class="section-head">
-      <div class="stag fade-up" style="background:var(--green-l);border-color:rgba(16,185,129,.3);color:var(--green)">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" aria-hidden="true"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
-        Simple process
-      </div>
-      <h2 class="fade-up">Up and running<br>in 3 minutes</h2>
-      <p class="sub fade-up">No complicated setup. No overwhelm. Just pick your habits and start building the life you want.</p>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num" aria-hidden="true">1</div>
-        <h3>Pick your habits</h3>
-        <p>Choose from 200+ proven habits or create your own. Set your goals and how often you want to do them.</p>
-      </div>
-      <div class="step">
-        <div class="step-num" aria-hidden="true">2</div>
-        <h3>Check in daily</h3>
-        <p>Open the app each day and tap to mark habits done. Watch the satisfying animations as your progress grows.</p>
-      </div>
-      <div class="step">
-        <div class="step-num" aria-hidden="true">3</div>
-        <h3>Build momentum</h3>
-        <p>Streaks compound. Weeks turn into months. One small habit at a time, you become who you want to be.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Stats -->
-<section id="stats">
-  <div class="section-wrap">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-num"><span class="cnt" data-t="40">0</span><span class="stat-sfx">k+</span></div>
-        <div class="stat-lbl">Active users</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num"><span class="cnt" data-t="3">0</span><span class="stat-sfx">M+</span></div>
-        <div class="stat-lbl">Habits checked off</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num"><span class="cnt" data-t="87">0</span><span class="stat-sfx">%</span></div>
-        <div class="stat-lbl">Stick after 30 days</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num"><span class="cnt" data-t="4">0</span><span class="stat-sfx">.9★</span></div>
-        <div class="stat-lbl">App store rating</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Interactive Demo -->
-<section id="demo">
-  <div class="section-wrap">
-    <div class="demo-section-inner">
-      <div class="demo-text fade-left">
-        <div class="stag" style="background:var(--blue-l);border-color:rgba(96,165,250,.3);color:var(--blue)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Live demo
-        </div>
-        <h2>Try it yourself<br>right here</h2>
-        <p class="sub">Tap any habit below to mark it complete. Watch your progress ring fill up — and maybe earn a celebration.</p>
-        <div class="demo-features">
-          <div class="demo-feat">
-            <div class="demo-feat-icon" style="background:var(--purple-xl)" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </div>
-            <div>
-              <div class="demo-feat-text">Instant feedback</div>
-              <div class="demo-feat-desc">Every tap triggers a satisfying animation</div>
-            </div>
-          </div>
-          <div class="demo-feat">
-            <div class="demo-feat-icon" style="background:var(--peach-l)" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--peach)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-            </div>
-            <div>
-              <div class="demo-feat-text">Progress ring</div>
-              <div class="demo-feat-desc">Visual progress fills as you complete habits</div>
-            </div>
-          </div>
-          <div class="demo-feat">
-            <div class="demo-feat-icon" style="background:var(--green-l)" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
-            </div>
-            <div>
-              <div class="demo-feat-text">Celebration burst</div>
-              <div class="demo-feat-desc">Complete all habits to see confetti!</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="ring-demo fade-right">
-        <!-- Progress ring -->
-        <div class="ring-wrap" aria-label="Progress ring showing habit completion">
-          <svg class="ring-svg" width="200" height="200" viewBox="0 0 200 200">
-            <defs>
-              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="var(--purple)"/>
-                <stop offset="100%" stop-color="var(--pink)"/>
-              </linearGradient>
-            </defs>
-            <circle class="ring-bg" cx="100" cy="100" r="90"/>
-            <circle class="ring-fill" id="ring-fill" cx="100" cy="100" r="90"/>
-          </svg>
-          <div class="ring-label">
-            <span class="ring-pct" id="ring-pct">0%</span>
-            <span class="ring-sub">complete</span>
-          </div>
-        </div>
-
-        <!-- Mini interactive habits -->
-        <div class="mini-habits" id="mini-habits">
-          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="0">
-            <div class="mh-left">
-              <div class="mh-dot" aria-hidden="true"></div>
-              <div class="mh-name">Meditate</div>
-            </div>
-            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:75%"></div></div>
-          </div>
-          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="1">
-            <div class="mh-left">
-              <div class="mh-dot" aria-hidden="true"></div>
-              <div class="mh-name">Exercise</div>
-            </div>
-            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:60%"></div></div>
-          </div>
-          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="2">
-            <div class="mh-left">
-              <div class="mh-dot" aria-hidden="true"></div>
-              <div class="mh-name">Read</div>
-            </div>
-            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:85%"></div></div>
-          </div>
-          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="3">
-            <div class="mh-left">
-              <div class="mh-dot" aria-hidden="true"></div>
-              <div class="mh-name">Hydrate</div>
-            </div>
-            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:50%"></div></div>
-          </div>
-          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="4">
-            <div class="mh-left">
-              <div class="mh-dot" aria-hidden="true"></div>
-              <div class="mh-name">Journal</div>
-            </div>
-            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:40%"></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Testimonials -->
-<section id="testimonials">
-  <div class="section-wrap">
-    <div class="section-head">
-      <div class="stag fade-up" style="background:var(--yellow-l);border-color:rgba(251,191,36,.4);color:#92400E">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--yellow)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        Loved by users
-      </div>
-      <h2 class="fade-up">Real people,<br>real results</h2>
-      <p class="sub fade-up">Join 40,000+ people already building better habits with HabitFlow every day.</p>
-    </div>
-    <div class="test-grid">
-      <div class="test-card">
-        <div class="test-stars" aria-label="5 stars">
-          <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
-        </div>
-        <p class="test-text">"I've tried every habit app out there. HabitFlow is the first one that actually stuck. The animations make checking off habits genuinely satisfying — I look forward to it!"</p>
-        <div class="test-author">
-          <div class="test-av" style="background:linear-gradient(135deg,var(--purple),var(--pink))">SR</div>
-          <div><div class="test-name">Sofia Reyes</div><div class="test-role">Yoga teacher · 89 day streak</div></div>
-        </div>
-      </div>
-      <div class="test-card">
-        <div class="test-stars" aria-label="5 stars">
-          <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
-        </div>
-        <p class="test-text">"The streak feature is incredibly motivating. I haven't missed a single workout in 4 months because I refuse to break the chain. Best investment in myself I've made."</p>
-        <div class="test-author">
-          <div class="test-av" style="background:linear-gradient(135deg,var(--green),var(--blue))">MK</div>
-          <div><div class="test-name">Marcus Kim</div><div class="test-role">Software engineer · 127 day streak</div></div>
-        </div>
-      </div>
-      <div class="test-card">
-        <div class="test-stars" aria-label="5 stars">
-          <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
-        </div>
-        <p class="test-text">"As a therapist I recommend HabitFlow to my clients. The design is calming, the experience is gentle, and the progress tracking helps people actually see themselves growing."</p>
-        <div class="test-author">
-          <div class="test-av" style="background:linear-gradient(135deg,var(--peach),var(--yellow))">AJ</div>
-          <div><div class="test-name">Dr. Amara Johnson</div><div class="test-role">Therapist · 210 day streak</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+</div>
 
 <!-- CTA -->
-<section id="cta">
-  <div class="section-wrap">
-    <div class="cta-card">
-      <div class="stag fade-up" style="background:rgba(255,255,255,.7)">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        Start today
-      </div>
-      <h2 class="fade-up">Your best self is<br><span class="h1-accent">one habit away</span></h2>
-      <p class="sub fade-up">Free forever for up to 5 habits. Premium unlocks unlimited habits, charts, and AI coaching.</p>
-      <div class="cta-btns">
-        <a href="#" class="btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          Get started — it's free
-        </a>
-      </div>
-      <div class="cta-stores">
-        <a href="#" class="store-btn" aria-label="Download on the App Store">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" aria-hidden="true"><path d="M9 7c0-1.1.9-2 2-2h2a2 2 0 0 1 2 2v1H9V7z"/><path d="M3 10h18v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10z"/></svg>
-          App Store
-        </a>
-        <a href="#" class="store-btn" aria-label="Get it on Google Play">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Google Play
-        </a>
-        <a href="#" class="store-btn" aria-label="Use on the web">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          Use on web
-        </a>
+<div id="cta">
+  <div class="cta-inner reveal">
+    <div class="cta-glow"></div>
+    <div class="cta-box">
+      <h2 class="cta-title">Ready To <span style="color:var(--orange)">Forge</span><br>Your Body?</h2>
+      <p class="cta-sub">Start your transformation with science-backed, expert-programmed training.</p>
+      <div class="hero-actions" style="justify-content:center">
+        <a href="#explorer" class="btn-primary">Start Training Now</a>
+        <a href="#plans" class="btn-secondary">View Programs</a>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- Footer -->
 <footer>
-  <div class="footer-inner">
-    <div>
-      <div class="nav-logo" style="margin-bottom:6px">
-        <div class="nav-logo-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
-        </div>
-        HabitFlow
-      </div>
-      <div class="footer-copy">© 2025 HabitFlow. Built with care for better habits.</div>
-    </div>
-    <nav class="footer-links" aria-label="Footer navigation">
-      <a href="#features">Features</a>
-      <a href="#how">How it works</a>
-      <a href="#testimonials">Reviews</a>
-      <a href="mailto:hello@habitflow.app">Contact</a>
-    </nav>
-  </div>
+  <div class="footer-logo">IronForge</div>
+  <div class="footer-copy">© 2025 IronForge — Forge Your Legacy.</div>
 </footer>
 
+<!-- OVERLAY PANEL -->
+<div class="overlay" id="overlay">
+  <div class="overlay-backdrop" id="overlayBackdrop" onclick="closePanel()"></div>
+  <div class="overlay-panel" id="overlayPanel">
+    <div class="panel-header">
+      <div>
+        <div class="section-label" id="panelLabel" style="margin-bottom:4px">Muscle Group</div>
+        <h2 class="panel-title" id="panelTitle">—</h2>
+      </div>
+      <button class="panel-close" onclick="closePanel()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="panel-content" id="panelContent"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <script>
-/* ─ Scroll progress ─ */
-const sb = document.getElementById('sb');
-const nb = document.getElementById('nb');
-const secIds = ['hero','features','how','stats','demo','testimonials','cta'];
-const secs = secIds.map(id => document.getElementById(id)).filter(Boolean);
-const navAs = document.querySelectorAll('.nav-links a');
+// =================== DATA ===================
+const DB = {
+  chest: { name:'Chest', label:'Pectoralis Major', heads: [
+    { name:'Upper — Clavicular', exercises: [
+      { name:'Incline Barbell Press', sets:'4', reps:'6–8', level:'Intermediate', desc:'Set bench to 30–45°. Drive through the heel of your palm. Best upper chest thickness builder.' },
+      { name:'Incline Dumbbell Fly', sets:'3', reps:'10–12', level:'Beginner', desc:'Slight bend in elbows throughout. Focus on the deep stretch at the bottom of each rep.' },
+      { name:'High-to-Low Cable Fly', sets:'3', reps:'12–15', level:'Beginner', desc:'Cables set high. Arc hands down and together. Unique upper clavicular fiber angle.' },
+      { name:'Landmine Press', sets:'3', reps:'8–10', level:'Intermediate', desc:'Shoulder-friendly pressing angle. Excellent unilateral upper chest activation.' },
+    ]},
+    { name:'Middle — Sternal', exercises: [
+      { name:'Flat Barbell Bench Press', sets:'4', reps:'5–8', level:'Beginner', desc:'Slight arch, scapulae retracted. The king of chest mass — full ROM essential.' },
+      { name:'Dumbbell Fly', sets:'3', reps:'12–15', level:'Beginner', desc:'Wide arc, slight elbow bend. Peak stretch at the bottom. Squeeze hard at the top.' },
+      { name:'Cable Crossover', sets:'3', reps:'12–15', level:'Beginner', desc:'Cables at mid height. Hands cross at peak contraction. Constant tension throughout.' },
+      { name:'Pec Deck Machine', sets:'3', reps:'15', level:'Beginner', desc:'Full range of motion. Hold peak contraction 1 second. Safe and effective finisher.' },
+    ]},
+    { name:'Lower — Costal', exercises: [
+      { name:'Decline Bench Press', sets:'4', reps:'6–10', level:'Intermediate', desc:'Feet secured. 15–30° decline. Greater ROM and lower chest fiber stretch.' },
+      { name:'Weighted Dips', sets:'4', reps:'8–12', level:'Intermediate', desc:'Lean torso forward, flare elbows slightly. Descend deep. Powerful lower chest builder.' },
+      { name:'Low-to-High Cable Fly', sets:'3', reps:'12–15', level:'Beginner', desc:'Cables set low. Arc hands up and together. Targets lower costal fibers directly.' },
+      { name:'Decline DB Fly', sets:'3', reps:'12', level:'Intermediate', desc:'Combines decline angle with fly mechanics. Deep lower chest stretch on every rep.' },
+    ]},
+  ]},
+  biceps: { name:'Biceps', label:'Biceps Brachii', heads: [
+    { name:'Long Head', exercises: [
+      { name:'Incline Dumbbell Curl', sets:'3', reps:'10–12', level:'Beginner', desc:'Arm goes slightly behind torso. Maximizes long head stretch at the bottom position.' },
+      { name:'Drag Curl', sets:'3', reps:'10–12', level:'Intermediate', desc:'Drag the bar up your torso as you curl. Elbows stay behind the body throughout.' },
+      { name:'Overhead Cable Curl', sets:'3', reps:'12–15', level:'Beginner', desc:'Cable set high, arm extended overhead. Unique long head angle under constant tension.' },
+    ]},
+    { name:'Short Head', exercises: [
+      { name:'Preacher Curl', sets:'3', reps:'10–12', level:'Beginner', desc:'Arm fully supported at the bottom. Eliminates momentum. Pure short head isolation.' },
+      { name:'Concentration Curl', sets:'3', reps:'12–15', level:'Beginner', desc:'Elbow braced on inner thigh. Curl to full contraction. Best short head isolation exercise.' },
+      { name:'Close-Grip Barbell Curl', sets:'3', reps:'8–10', level:'Intermediate', desc:'Hands shoulder-width or closer. Shifts mechanical advantage to the short head.' },
+    ]},
+    { name:'Brachialis', exercises: [
+      { name:'Hammer Curl', sets:'3', reps:'10–12', level:'Beginner', desc:'Neutral grip throughout. Primary brachialis + brachioradialis exercise. Adds arm width.' },
+      { name:'Reverse Curl', sets:'3', reps:'12–15', level:'Beginner', desc:'Overhand (pronated) grip. Forearm flexors and brachialis dominate the movement.' },
+      { name:'Zottman Curl', sets:'3', reps:'10–12', level:'Intermediate', desc:'Supinate on the way up, pronate on the way down. Full brachialis range stimulus.' },
+    ]},
+  ]},
+  triceps: { name:'Triceps', label:'Triceps Brachii', heads: [
+    { name:'Lateral Head', exercises: [
+      { name:'Pushdown — Straight Bar', sets:'4', reps:'10–15', level:'Beginner', desc:'Elbows tucked, full lockout at bottom. Most effective for lateral head isolation.' },
+      { name:'Close-Grip Bench Press', sets:'4', reps:'6–8', level:'Intermediate', desc:'Hands shoulder-width. Lower to chest. Heavy compound overload for all three heads.' },
+      { name:'Kickback', sets:'3', reps:'12–15', level:'Beginner', desc:'Upper arm stays parallel to floor. Extend to full lockout. Great lateral head pump.' },
+    ]},
+    { name:'Long Head', exercises: [
+      { name:'Skull Crusher', sets:'4', reps:'8–12', level:'Intermediate', desc:'EZ-bar or dumbbells. Lower to forehead. Long head is fully stretched above the elbow.' },
+      { name:'Overhead Cable Extension', sets:'3', reps:'12–15', level:'Beginner', desc:'Arms overhead. Cable pulls from behind head. Maximum long head stretch under load.' },
+      { name:'Overhead DB Extension', sets:'3', reps:'10–12', level:'Beginner', desc:'Single dumbbell overhead, elbows pointing up. Best pure long head mass builder.' },
+    ]},
+    { name:'Medial Head', exercises: [
+      { name:'Reverse Grip Pushdown', sets:'3', reps:'15', level:'Beginner', desc:'Underhand grip on bar. Elbow flexion at top activates medial head fibres.' },
+      { name:'Diamond Push-Up', sets:'3', reps:'12–20', level:'Beginner', desc:'Hands form diamond shape below sternum. Bodyweight. Hits all three heads evenly.' },
+      { name:'Bench Dip', sets:'3', reps:'15–20', level:'Beginner', desc:'Hands on bench behind. Lower until elbows reach 90°. Great medial activation.' },
+    ]},
+  ]},
+  shoulders: { name:'Shoulders', label:'Deltoid Complex', heads: [
+    { name:'Anterior — Front', exercises: [
+      { name:'Overhead Barbell Press', sets:'4', reps:'5–8', level:'Intermediate', desc:'Press from front rack overhead. The primary anterior delt strength builder.' },
+      { name:'Dumbbell Front Raise', sets:'3', reps:'12–15', level:'Beginner', desc:'Raise to shoulder height. Controlled eccentric. Keep slight elbow bend throughout.' },
+      { name:'Arnold Press', sets:'3', reps:'10–12', level:'Intermediate', desc:'Rotate from neutral to pronated as you press. Covers entire anterior deltoid arc.' },
+    ]},
+    { name:'Lateral — Side', exercises: [
+      { name:'Lateral Raise', sets:'4', reps:'12–20', level:'Beginner', desc:'Lead with elbows, not wrists. Stop at shoulder height. Slight forward lean allowed.' },
+      { name:'Cable Lateral Raise', sets:'3', reps:'15–20', level:'Beginner', desc:'Constant tension throughout the ROM. Cross-body cable for unique stretch angle.' },
+      { name:'Upright Row (Wide)', sets:'3', reps:'10–12', level:'Intermediate', desc:'Wide grip reduces impingement risk. Pull to chin level. Strong lateral delt builder.' },
+    ]},
+    { name:'Posterior — Rear', exercises: [
+      { name:'Face Pull', sets:'4', reps:'15–20', level:'Beginner', desc:'Rope to face, elbows high. Rear delt + external rotation. Essential shoulder health.' },
+      { name:'Rear Delt Fly', sets:'3', reps:'15–20', level:'Beginner', desc:'Torso hinged forward. Arc arms back and up. Squeeze rear delts at the top.' },
+      { name:'Reverse Pec Deck', sets:'3', reps:'15–20', level:'Beginner', desc:'Face the machine. Full range of motion. Excellent rear delt isolation and pump.' },
+    ]},
+  ]},
+  abs: { name:'Core', label:'Abdominals + Obliques', heads: [
+    { name:'Upper Abs', exercises: [
+      { name:'Cable Crunch', sets:'4', reps:'15–20', level:'Beginner', desc:'Pull abs to hips — not head to knees. Heavy loading is possible. Best upper abs exercise.' },
+      { name:'Decline Sit-Up', sets:'3', reps:'15–20', level:'Beginner', desc:'Greater range of motion than flat version. Add weight to chest for progression.' },
+      { name:'Machine Crunch', sets:'3', reps:'20', level:'Beginner', desc:'Consistent resistance curve. Easy progressive overload. Great finisher.' },
+    ]},
+    { name:'Lower Abs', exercises: [
+      { name:'Hanging Leg Raise', sets:'4', reps:'10–15', level:'Intermediate', desc:'Posterior pelvic tilt at the top. Avoid swinging. Controls lower ab activation.' },
+      { name:'Reverse Crunch', sets:'3', reps:'15–20', level:'Beginner', desc:'Curl hips toward ribcage. Slow and controlled. Lower rectus abdominis primary mover.' },
+      { name:'Ab Wheel Rollout', sets:'3', reps:'8–12', level:'Advanced', desc:'Brace the core hard. Only roll as far as you can keep a neutral spine.' },
+    ]},
+    { name:'Obliques', exercises: [
+      { name:'Russian Twist', sets:'3', reps:'20–30', level:'Beginner', desc:'Lean back 45°. Rotate with weight. Oblique rotation is the primary movement.' },
+      { name:'Cable Wood Chop', sets:'3', reps:'12–15', level:'Beginner', desc:'Diagonal pulling motion works obliques through rotation. Both directions matter.' },
+      { name:'Side Plank', sets:'3', reps:'30–60s', level:'Beginner', desc:'Hips elevated. Add hip dips for dynamic version. Builds strong oblique endurance.' },
+    ]},
+  ]},
+  quads: { name:'Quads', label:'Quadriceps Femoris', heads: [
+    { name:'Rectus Femoris', exercises: [
+      { name:'Leg Extension', sets:'3', reps:'12–15', level:'Beginner', desc:'The only exercise that truly isolates rectus femoris. Full lockout at the top.' },
+      { name:'Bulgarian Split Squat', sets:'4', reps:'8–10', level:'Intermediate', desc:'Rear foot elevated. Forward torso lean increases rectus femoris demand.' },
+      { name:'Sissy Squat', sets:'3', reps:'10–15', level:'Advanced', desc:'Lean back as you lower. Knees travel forward. Advanced RF isolator.' },
+    ]},
+    { name:'Vastus Lateralis', exercises: [
+      { name:'Hack Squat (Narrow)', sets:'4', reps:'8–12', level:'Intermediate', desc:'Narrow stance on the platform. Deep range of motion biases outer quad.' },
+      { name:'Leg Press (Wide + High)', sets:'4', reps:'10–15', level:'Beginner', desc:'Wide, high foot placement shifts load to the vastus lateralis.' },
+      { name:'Cycling / Bike', sets:'—', reps:'20–30 min', level:'Beginner', desc:'Low impact high-rep cardio. Outer quad dominant with pedal stroke mechanics.' },
+    ]},
+    { name:'VMO (Vastus Medialis)', exercises: [
+      { name:'Close Stance Squat', sets:'4', reps:'8–12', level:'Beginner', desc:'Feet close together. Knee tracks over pinky toe. Inner quad activation.' },
+      { name:'Terminal Knee Extension', sets:'3', reps:'15–20', level:'Beginner', desc:'Band around knee, extend to full lockout. VMO isolation at terminal range.' },
+      { name:'Step-Up', sets:'3', reps:'12', level:'Beginner', desc:'Drive through heel. High box increases VMO demand and single-leg stability.' },
+    ]},
+  ]},
+  hamstrings: { name:'Hamstrings', label:'Posterior Thigh', heads: [
+    { name:'Biceps Femoris', exercises: [
+      { name:'Romanian Deadlift', sets:'4', reps:'8–10', level:'Intermediate', desc:'Hip hinge. Feel the stretch in the hamstrings. Slight knee bend. Bar close to body.' },
+      { name:'Seated Leg Curl', sets:'4', reps:'10–15', level:'Beginner', desc:'Seated position stretches hamstrings at the hip. Better biceps femoris activation.' },
+      { name:'Good Morning', sets:'3', reps:'10–12', level:'Intermediate', desc:'Bar on upper back. Hip hinge only. Powerful posterior chain mass builder.' },
+    ]},
+    { name:'Semimembranosus', exercises: [
+      { name:'Lying Leg Curl', sets:'4', reps:'10–15', level:'Beginner', desc:'Prone position, curl to glutes. Semimembranosus is dominant in this angle.' },
+      { name:'Stiff-Leg Deadlift', sets:'3', reps:'8–10', level:'Intermediate', desc:'Minimal knee bend. Pure hip hinge. Full posterior chain stretch on every rep.' },
+      { name:'Single-Leg RDL', sets:'3', reps:'10', level:'Intermediate', desc:'Balance + strength. Greater semimembranosus recruitment than bilateral version.' },
+    ]},
+    { name:'Semitendinosus', exercises: [
+      { name:'Nordic Hamstring Curl', sets:'3', reps:'5–8', level:'Advanced', desc:'Feet anchored, lower under control. Highest eccentric hamstring load of any exercise.' },
+      { name:'Glute-Ham Raise', sets:'3', reps:'8–10', level:'Advanced', desc:'Full ROM: hip extension + knee flexion. The most athletic hamstring builder.' },
+      { name:'Swiss Ball Leg Curl', sets:'3', reps:'12–15', level:'Beginner', desc:'Curl ball to glutes while bridging. Works all three hamstring muscles.' },
+    ]},
+  ]},
+  glutes: { name:'Glutes', label:'Gluteus Complex', heads: [
+    { name:'Gluteus Maximus', exercises: [
+      { name:'Barbell Hip Thrust', sets:'4', reps:'8–12', level:'Intermediate', desc:'Shoulders on bench. Drive hips to full extension. Squeeze hard for 1 second at top.' },
+      { name:'Barbell Squat', sets:'4', reps:'5–8', level:'Intermediate', desc:'Wide stance + depth = maximum glute involvement. King of posterior chain.' },
+      { name:'Romanian Deadlift', sets:'4', reps:'8–10', level:'Intermediate', desc:'Hip hinge stretches and contracts the glutes powerfully through full ROM.' },
+    ]},
+    { name:'Gluteus Medius', exercises: [
+      { name:'Hip Abduction Machine', sets:'3', reps:'15–20', level:'Beginner', desc:'Seated abduction. Direct medius isolation. Best exercise for glute roundness.' },
+      { name:'Clamshell (Banded)', sets:'3', reps:'20', level:'Beginner', desc:'Band above knees, side-lying. Medius activation without axial load.' },
+      { name:'Cable Hip Abduction', sets:'3', reps:'15', level:'Beginner', desc:'Cable at ankle. Abduct against resistance. Great glute med pump.' },
+    ]},
+    { name:'Gluteus Minimus', exercises: [
+      { name:'Lateral Band Walk', sets:'3', reps:'20 steps', level:'Beginner', desc:'Band above knees. Side-step with control. Minimus + medius activation.' },
+      { name:'Single-Leg Press', sets:'3', reps:'12–15', level:'Beginner', desc:'Unilateral hip extension. Glute minimus works as a stabiliser through full ROM.' },
+      { name:'Fire Hydrant', sets:'3', reps:'20', level:'Beginner', desc:'On hands and knees. Lift leg to side. Direct glute minimus isolation exercise.' },
+    ]},
+  ]},
+  calves: { name:'Calves', label:'Triceps Surae', heads: [
+    { name:'Gastrocnemius', exercises: [
+      { name:'Standing Calf Raise', sets:'4', reps:'15–20', level:'Beginner', desc:'Straight leg is key. Full ROM — deep stretch to full plantar flexion. Gastrocnemius dominant.' },
+      { name:'Donkey Calf Raise', sets:'4', reps:'15–25', level:'Intermediate', desc:'Bent-over position. Deep stretch. Legendary calf mass builder.' },
+      { name:'Leg Press Calf Raise', sets:'3', reps:'20–25', level:'Beginner', desc:'Controlled. Full stretch at the bottom is critical. High rep for pump.' },
+    ]},
+    { name:'Soleus', exercises: [
+      { name:'Seated Calf Raise', sets:'4', reps:'12–20', level:'Beginner', desc:'Bent knee isolates the soleus. The deeper muscle responsible for calf thickness.' },
+      { name:'Soleus Press (Seated)', sets:'3', reps:'20–25', level:'Beginner', desc:'Load placed on knees. Slow and controlled. Pure soleus hypertrophy.' },
+      { name:'Banded Soleus Stretch', sets:'3', reps:'15', level:'Beginner', desc:'Bent-knee stretch under load. Combines mobility and strength for deep soleus.' },
+    ]},
+  ]},
+  back: { name:'Back', label:'Lats + Traps', heads: [
+    { name:'Upper Lats', exercises: [
+      { name:'Wide-Grip Pull-Up', sets:'4', reps:'6–10', level:'Intermediate', desc:'Wide pronated grip. Pull chest to bar. The gold standard for lat width.' },
+      { name:'Wide-Grip Lat Pulldown', sets:'4', reps:'10–12', level:'Beginner', desc:'Pull to upper chest. Slight lean back. Constant lat tension throughout.' },
+      { name:'Straight Arm Pulldown', sets:'3', reps:'15', level:'Beginner', desc:'Arms straight. Pull with lats only — no elbow flexion. Pure lat isolation.' },
+    ]},
+    { name:'Lower Lats', exercises: [
+      { name:'Close-Grip Seated Row', sets:'4', reps:'10–12', level:'Beginner', desc:'Pull to belly button. Elbows stay tight to torso. Lower lat thickness builder.' },
+      { name:'Dumbbell Pullover', sets:'3', reps:'12–15', level:'Beginner', desc:'Arc weight over and behind head. Fantastic lower lat stretch under load.' },
+      { name:'Underhand Lat Pulldown', sets:'3', reps:'10–12', level:'Beginner', desc:'Supinated grip biases lower lats. Also hits biceps. Pull to chin level.' },
+    ]},
+    { name:'Traps + Rhomboids', exercises: [
+      { name:'Barbell Shrug', sets:'4', reps:'10–15', level:'Beginner', desc:'Shrug straight up. Hold briefly at top. Upper trapezius hypertrophy.' },
+      { name:'Face Pull', sets:'4', reps:'15–20', level:'Beginner', desc:'Rope to face. Elbows high. Rear delt + rhomboid + lower trap activation.' },
+      { name:'Pendlay Row', sets:'4', reps:'6–8', level:'Intermediate', desc:'Dead-stop from floor each rep. Explosive mid-back and trap mass builder.' },
+    ]},
+  ]},
+  forearms: { name:'Forearms', label:'Forearm Muscles', heads: [
+    { name:'Flexors', exercises: [
+      { name:'Wrist Curl', sets:'3', reps:'15–25', level:'Beginner', desc:'Forearms on thighs, palms up. Curl wrist upward. Direct forearm flexor isolation.' },
+      { name:'Reverse Curl', sets:'3', reps:'12–15', level:'Beginner', desc:'Pronated grip. Full forearm flexor and extensor recruitment.' },
+      { name:'Farmer Walk', sets:'4', reps:'30–40m', level:'Beginner', desc:'Carry heavy dumbbells. Best functional forearm and grip strength builder.' },
+    ]},
+    { name:'Extensors', exercises: [
+      { name:'Reverse Wrist Curl', sets:'3', reps:'15–25', level:'Beginner', desc:'Palms facing down. Dorsiflexion against resistance. Extensor hypertrophy.' },
+      { name:'Plate Pinch', sets:'3', reps:'30–60s', level:'Beginner', desc:'Pinch two plates together. Excellent thumb extensor and grip endurance.' },
+      { name:'Hand Gripper', sets:'3', reps:'20', level:'Beginner', desc:'Squeeze to full close. Controls release slowly. Crushing grip strength.' },
+    ]},
+  ]},
+};
 
-window.addEventListener('scroll', () => {
-  const y = window.scrollY, H = document.body.scrollHeight - window.innerHeight;
-  sb.style.width = (y / H * 100) + '%';
-  let cur = 'hero';
-  secs.forEach(s => { if (y >= s.offsetTop - 200) cur = s.id; });
-  navAs.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur));
-}, { passive: true });
+const PLANS = [
+  { name:'Power Hypertrophy', desc:'Combines heavy compound movements with volume work for maximum size and strength.', tags:['4 Days / Week','Intermediate','Barbell + DB'], days:[1,1,0,1,1,0,0], icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M3 3l4 4M17 3l4 4M3 21l4-4M17 21l4-4"/></svg>' },
+  { name:'Push Pull Legs', desc:'Classic PPL split hitting every muscle twice per week for consistent hypertrophy gains.', tags:['6 Days / Week','Beginner+','Full Gym'], days:[1,1,1,1,1,1,0], icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>' },
+  { name:'Upper / Lower Split', desc:'Alternating upper and lower body days. Highly efficient, science-backed frequency.', tags:['4 Days / Week','All Levels','Flexible'], days:[1,1,0,1,1,0,0], icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>' },
+  { name:'Full Body Strength', desc:'Three full-body sessions per week. Perfect for building a strength foundation.', tags:['3 Days / Week','Beginner','Compound Focus'], days:[1,0,1,0,1,0,0], icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>' },
+  { name:'Athletic Conditioning', desc:'Sport performance with strength, power, and metabolic conditioning combined.', tags:['5 Days / Week','Advanced','Power + Cardio'], days:[1,1,0,1,1,1,0], icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>' },
+  { name:'Aesthetics Program', desc:'Muscle sculpting focused on visual balance, proportion, and definition.', tags:['5 Days / Week','Intermediate','High Volume'], days:[1,1,1,0,1,1,0], icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' },
+];
 
-/* ─ Set today's date ─ */
-const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-document.getElementById('demo-date').textContent = days[new Date().getDay()];
+// =================== SVG BODY ===================
+const SVG_DEFS = `<defs>
+  <linearGradient id="bG" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+    <stop offset="0%"   stop-color="#14141e"/>
+    <stop offset="35%"  stop-color="#1f1f2e"/>
+    <stop offset="50%"  stop-color="#262636"/>
+    <stop offset="65%"  stop-color="#1f1f2e"/>
+    <stop offset="100%" stop-color="#14141e"/>
+  </linearGradient>
+  <radialGradient id="bS" cx="38%" cy="22%" r="60%" gradientUnits="objectBoundingBox">
+    <stop offset="0%"   stop-color="rgba(255,255,255,0.18)"/>
+    <stop offset="50%"  stop-color="rgba(255,255,255,0.05)"/>
+    <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+  </radialGradient>
+</defs>`;
 
-/* ─ Hero habit check-off ─ */
-const totalHero = 4;
-let checkedHero = 0;
-
-function updateHeroProgress() {
-  const pct = Math.round(checkedHero / totalHero * 100);
-  document.getElementById('progress-pct').textContent = pct + '%';
-  const fill = document.getElementById('progress-fill');
-  fill.style.width = pct + '%';
-  fill.parentElement.setAttribute('aria-valuenow', pct);
-  if (checkedHero === totalHero) burst(document.getElementById('habits-list'));
+/* Helper: same path twice — once for base fill, once for shine overlay */
+function bp(d) {
+  return `<path class="bb" d="${d}"/><path class="bs" d="${d}"/>`;
+}
+function be(cx,cy,rx,ry) {
+  return `<ellipse class="bb" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/><ellipse class="bs" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"/>`;
+}
+/* Muscle region path */
+function mr(key, d) {
+  return `<path class="mr" data-key="${key}" d="${d}"/>`;
+}
+/* Muscle region rect */
+function mre(key, x, y, w, h, r=4) {
+  return `<rect class="mr" data-key="${key}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}"/>`;
 }
 
-document.querySelectorAll('#habits-list .habit-row').forEach(row => {
-  function toggle() {
-    const wasChecked = row.classList.contains('checked');
-    row.classList.toggle('checked');
-    row.setAttribute('aria-checked', !wasChecked);
-    if (!wasChecked) { checkedHero++; burst(row); }
-    else { checkedHero = Math.max(0, checkedHero - 1); }
-    updateHeroProgress();
-  }
-  row.addEventListener('click', toggle);
-  row.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
-});
+/* ===== FRONT BODY ===== */
+const BODY_BASE = () => `
+  ${be(190,52,34,44)}
+  ${bp('M181,93C180,100 179,107 178,116L202,116C201,107 200,100 199,93Z')}
+  ${bp('M178,116C163,119 146,129 134,142C122,154 116,170 116,188L116,200L140,208L140,408C150,420 164,424 178,424L202,424C216,424 230,420 240,408L240,208L264,200L264,188C264,170 258,154 246,142C234,129 217,119 202,116Z')}
+  ${bp('M116,185C108,192 103,204 102,218L102,308C102,320 107,330 114,335L140,316L140,202Z')}
+  ${bp('M264,185C272,192 277,204 278,218L278,308C278,320 273,330 266,335L240,316L240,202Z')}
+  ${bp('M102,308C100,323 98,340 98,356C98,372 101,386 106,396L120,402L138,392L140,318Z')}
+  ${bp('M278,308C280,323 282,340 282,356C282,372 279,386 274,396L260,402L242,392L240,318Z')}
+  ${bp('M106,396C102,404 100,414 100,422C100,430 104,436 110,436C116,436 122,430 124,420L126,398Z')}
+  ${bp('M274,396C278,404 280,414 280,422C280,430 276,436 270,436C264,436 258,430 256,420L254,398Z')}
+  ${bp('M150,424C144,440 140,460 138,480L136,542C136,558 140,572 150,578L166,578L178,576L178,424Z')}
+  ${bp('M230,424C236,440 240,460 242,480L244,542C244,558 240,572 230,578L214,578L202,576L202,424Z')}
+  ${bp('M143,578C139,596 137,616 139,636C141,655 147,669 157,675L167,677L179,675L180,577Z')}
+  ${bp('M237,578C241,596 243,616 241,636C239,655 233,669 223,675L213,677L201,675L200,577Z')}
+  ${bp('M154,675C148,680 144,686 142,692L182,694L182,676Z')}
+  ${bp('M226,675C232,680 236,686 238,692L198,694L198,676Z')}
+`;
 
-/* ─ Mini habits in demo section ─ */
-const totalMini = 5;
-let checkedMini = 0;
-const circ = 2 * Math.PI * 90; // stroke-dasharray
+const MUSCLES_FRONT = () => `
+  ${mr('shoulders','M118,158C110,167 105,181 105,197C105,213 109,228 116,238C122,246 130,250 137,248C144,246 149,238 150,226L149,167C141,159 130,154 118,158Z')}
+  ${mr('shoulders','M262,158C270,167 275,181 275,197C275,213 271,228 264,238C258,246 250,250 243,248C236,246 231,238 230,226L231,167C239,159 250,154 262,158Z')}
+  ${mr('chest','M192,147C183,147 165,155 151,169C137,183 129,201 130,220C131,237 141,251 155,257C167,263 183,261 192,251C198,244 200,233 198,220L192,147Z')}
+  ${mr('chest','M188,147C197,147 215,155 229,169C243,183 251,201 250,220C249,237 239,251 225,257C213,263 197,261 188,251C182,244 180,233 182,220L188,147Z')}
+  ${mr('biceps','M104,236C102,251 101,266 102,280C103,295 107,308 114,316C120,323 128,326 135,323C142,320 147,311 148,299L148,229C139,222 122,225 104,236Z')}
+  ${mr('biceps','M276,236C278,251 279,266 278,280C277,295 273,308 266,316C260,323 252,326 245,323C238,320 233,311 232,299L232,229C241,222 258,225 276,236Z')}
+  ${mr('forearms','M102,314C100,329 98,346 98,362C98,378 101,392 107,400L121,406L139,396L141,322C128,312 114,311 102,314Z')}
+  ${mr('forearms','M278,314C280,329 282,346 282,362C282,378 279,392 273,400L259,406L239,396L239,322C252,312 266,311 278,314Z')}
+  ${mre('abs',170,260,22,22)}
+  ${mre('abs',194,260,22,22)}
+  ${mre('abs',169,287,22,22)}
+  ${mre('abs',195,287,22,22)}
+  ${mre('abs',170,314,22,22)}
+  ${mre('abs',196,314,22,22)}
+  ${mr('abs','M136,244C131,259 129,277 129,294C129,311 131,326 136,338L147,344L150,254C145,247 141,243 136,244Z')}
+  ${mr('abs','M244,244C249,259 251,277 251,294C251,311 249,326 244,338L233,344L230,254C235,247 239,243 244,244Z')}
+  ${mr('quads','M150,424C144,443 140,464 139,485C138,505 139,523 143,537C147,549 155,557 164,558C172,559 179,552 182,540C185,528 184,512 182,496L178,424Z')}
+  ${mr('quads','M230,424C236,443 240,464 241,485C242,505 241,523 237,537C233,549 225,557 216,558C208,559 201,552 198,540C195,528 196,512 198,496L202,424Z')}
+  ${mr('calves','M141,582C138,599 137,619 139,639C141,658 148,671 158,676L168,678L180,675L181,581C169,576 155,576 141,582Z')}
+  ${mr('calves','M239,582C242,599 243,619 241,639C239,658 232,671 222,676L212,678L200,675L199,581C211,576 225,576 239,582Z')}
+`;
 
-function updateRing() {
-  const pct = checkedMini / totalMini;
-  const offset = circ * (1 - pct);
-  document.getElementById('ring-fill').style.strokeDashoffset = offset;
-  document.getElementById('ring-pct').textContent = Math.round(pct * 100) + '%';
-  if (checkedMini === totalMini) {
-    setTimeout(() => burst(document.getElementById('mini-habits'), 80), 200);
-  }
+/* ===== BACK BODY ===== */
+const BODY_BASE_BACK = () => BODY_BASE();
+
+const MUSCLES_BACK = () => `
+  ${mr('back','M190,118C176,124 157,137 144,153C132,169 127,187 129,208C131,224 142,236 155,239L190,246L225,239C238,236 249,224 251,208C253,187 248,169 236,153C223,137 204,124 190,118Z')}
+  ${mr('back','M129,208C123,224 117,244 116,264C114,280 115,296 121,308C126,318 134,323 143,321L154,316L154,226C146,219 138,214 129,208Z')}
+  ${mr('back','M251,208C257,224 263,244 264,264C266,280 265,296 259,308C254,318 246,323 237,321L226,316L226,226C234,219 242,214 251,208Z')}
+  ${mr('shoulders','M118,160C110,170 105,184 105,200C105,216 109,231 116,241C122,249 131,252 138,250C145,247 150,239 151,227L150,169C141,161 130,156 118,160Z')}
+  ${mr('shoulders','M262,160C270,170 275,184 275,200C275,216 271,231 264,241C258,249 249,252 242,250C235,247 230,239 229,227L230,169C239,161 250,156 262,160Z')}
+  ${mr('triceps','M102,232C100,249 100,266 103,280C106,294 112,305 119,311C125,316 132,317 138,313C144,309 147,299 147,287L146,224C137,217 119,219 102,232Z')}
+  ${mr('triceps','M278,232C280,249 280,266 277,280C274,294 268,305 261,311C255,316 248,317 242,313C236,309 233,299 233,287L234,224C243,217 261,219 278,232Z')}
+  ${mr('forearms','M100,316C98,331 97,348 97,364C97,380 100,394 106,402L120,408L138,398L140,324C126,314 112,313 100,316Z')}
+  ${mr('forearms','M280,316C282,331 283,348 283,364C283,380 280,394 274,402L260,408L242,398L240,324C254,314 268,313 280,316Z')}
+  ${mr('glutes','M152,408C145,423 141,442 141,461C141,478 146,491 156,496C165,501 175,499 182,491C188,482 188,470 185,457L183,412C174,406 162,404 152,408Z')}
+  ${mr('glutes','M228,408C235,423 239,442 239,461C239,478 234,491 224,496C215,501 205,499 198,491C192,482 192,470 195,457L197,412C206,406 218,404 228,408Z')}
+  ${mr('hamstrings','M141,477C137,499 135,522 136,545C137,565 143,579 152,584C160,589 169,587 175,580C180,572 181,558 178,541L172,477Z')}
+  ${mr('hamstrings','M239,477C243,499 245,522 244,545C243,565 237,579 228,584C220,589 211,587 205,580C200,572 199,558 202,541L208,477Z')}
+  ${mr('calves','M139,586C135,605 134,626 137,647C139,666 147,678 158,681L168,683L179,680L180,585C167,580 153,580 139,586Z')}
+  ${mr('calves','M241,586C245,605 246,626 243,647C241,666 233,678 222,681L212,683L201,680L200,585C213,580 227,580 241,586Z')}
+`;
+
+function buildFront() {
+  return `<svg viewBox="0 0 380 710" xmlns="http://www.w3.org/2000/svg" overflow="visible">${SVG_DEFS}${BODY_BASE()}${MUSCLES_FRONT()}</svg>`;
 }
-updateRing();
-
-document.querySelectorAll('#mini-habits .mini-habit').forEach(mh => {
-  function toggleMini() {
-    const was = mh.classList.contains('done');
-    mh.classList.toggle('done');
-    mh.setAttribute('aria-checked', !was);
-    if (!was) { checkedMini++; }
-    else { checkedMini = Math.max(0, checkedMini - 1); }
-    updateRing();
-  }
-  mh.addEventListener('click', toggleMini);
-  mh.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleMini(); } });
-});
-
-/* ─ Confetti burst ─ */
-const colors = ['#A855F7','#EC4899','#10B981','#FB923C','#60A5FA','#FBBF24','#F9A8D4','#D1FAE5'];
-function burst(anchor, count = 40) {
-  const rect = anchor.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-  const container = document.getElementById('confetti-container');
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    p.className = 'confetti-piece';
-    const size = 6 + Math.random() * 8;
-    const angle = Math.random() * 360;
-    const dist = 80 + Math.random() * 160;
-    const dx = Math.cos(angle * Math.PI / 180) * dist;
-    const duration = 0.6 + Math.random() * 0.6;
-    p.style.cssText = `
-      left:${cx}px;top:${cy}px;
-      width:${size}px;height:${size}px;
-      background:${colors[Math.floor(Math.random() * colors.length)]};
-      border-radius:${Math.random() > .5 ? '50%' : '3px'};
-      --dx:${dx}px;--rot:${Math.random() * 720}deg;
-      animation-duration:${duration}s;
-      animation-delay:${Math.random() * 0.15}s;
-    `;
-    container.appendChild(p);
-    setTimeout(() => p.remove(), (duration + 0.15) * 1000 + 100);
-  }
+function buildBack() {
+  return `<svg viewBox="0 0 380 710" xmlns="http://www.w3.org/2000/svg" overflow="visible">${SVG_DEFS}${BODY_BASE_BACK()}${MUSCLES_BACK()}</svg>`;
 }
 
-/* ─ IntersectionObserver scroll animations ─ */
-const io = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const el = entry.target;
-    const delay = Number(el.dataset.delay || 0);
-    setTimeout(() => el.classList.add('visible'), delay);
-    io.unobserve(el);
+// =================== SIDEBAR ===================
+const LEFT_KEYS  = ['chest','biceps','abs','quads','calves'];
+const RIGHT_KEYS = ['shoulders','triceps','forearms','back','hamstrings','glutes'];
+let currentView='front', currentMuscle=null;
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('btnFront').classList.toggle('active', v==='front');
+  document.getElementById('btnBack').classList.toggle('active', v==='back');
+  document.getElementById('bodyWrap').innerHTML = v==='front' ? buildFront() : buildBack();
+  bindMuscleClicks();
+  if (currentMuscle) highlightAll(currentMuscle);
+}
+
+function bindMuscleClicks() {
+  document.querySelectorAll('.mr').forEach(el => {
+    el.addEventListener('click', () => {
+      const k = el.dataset.key;
+      // flash animation
+      document.querySelectorAll(`.mr[data-key="${k}"]`).forEach(r => {
+        r.classList.remove('flash','active');
+        void r.offsetWidth;
+        r.classList.add('flash');
+        setTimeout(() => { r.classList.remove('flash'); r.classList.add('active'); }, 360);
+      });
+      openPanel(k);
+    });
   });
-}, { threshold: 0.1 });
+}
 
-function observe(sel, base = 0, step = 90) {
-  document.querySelectorAll(sel).forEach((el, i) => {
-    el.dataset.delay = base + i * step;
-    io.observe(el);
+function highlightAll(key) {
+  document.querySelectorAll('.mr').forEach(r => r.classList.toggle('active', r.dataset.key === key));
+}
+
+function buildSidePanels() {
+  document.getElementById('leftPanel').innerHTML  = LEFT_KEYS.map(quickCard).join('');
+  document.getElementById('rightPanel').innerHTML = RIGHT_KEYS.map(quickCard).join('');
+  document.querySelectorAll('.muscle-quick-card').forEach(c => c.addEventListener('click', () => openPanel(c.dataset.key)));
+}
+
+function quickCard(key) {
+  const d = DB[key];
+  const n = d.heads.reduce((a,h) => a+h.exercises.length, 0);
+  return `<div class="muscle-quick-card" data-key="${key}"><div class="mqc-name">${d.name}</div><div class="mqc-sub">${d.heads.length} regions · ${n} exercises</div><span class="mqc-badge">${d.label}</span></div>`;
+}
+
+// =================== PANEL ===================
+function openPanel(key) {
+  currentMuscle = key;
+  const d = DB[key]; if (!d) return;
+  document.getElementById('panelLabel').textContent = d.label;
+  document.getElementById('panelTitle').textContent = d.name;
+  renderPanel(d, 0);
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.querySelectorAll('.muscle-quick-card').forEach(c => c.classList.toggle('active', c.dataset.key === key));
+  highlightAll(key);
+}
+
+function closePanel() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.querySelectorAll('.mr,.muscle-quick-card').forEach(el => el.classList.remove('active'));
+  currentMuscle = null;
+}
+
+function switchHead(i) { if (currentMuscle) renderPanel(DB[currentMuscle], i); }
+
+function renderPanel(d, hi) {
+  const head = d.heads[hi];
+  const tabs = d.heads.map((h,i) => `<button class="head-tab${i===hi?' active':''}" onclick="switchHead(${i})">${h.name}</button>`).join('');
+  const count = d.heads.length;
+  const startX = 200 - ((count-1)*110)/2;
+  const blobs = d.heads.map((h,i) => {
+    const a = i===hi;
+    const cx = startX + i*110, cy = 82;
+    const rx = a?42:32, ry = a?58:44;
+    const fill = a?'rgba(249,115,22,0.45)':'rgba(249,115,22,0.1)';
+    const stroke = a?'#F97316':'rgba(249,115,22,0.25)';
+    const tc = a?'#FB923C':'rgba(255,255,255,0.3)';
+    const gf = a?`filter:drop-shadow(0 0 14px rgba(249,115,22,0.8))`:'';
+    const lbl = h.name.replace(/ — .*/,'').toUpperCase().substring(0,14);
+    return `<g onclick="switchHead(${i})" style="cursor:pointer;${gf}">
+      <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}" stroke="${stroke}" stroke-width="${a?2:1}"/>
+      <text x="${cx}" y="${cy+ry+16}" text-anchor="middle" font-family="'Barlow Condensed',sans-serif" font-size="8.5" font-weight="700" letter-spacing="0.8" fill="${tc}">${lbl}</text>
+    </g>`;
+  }).join('');
+  const exs = head.exercises.map((ex,i) => `<div class="exercise-card">
+    <div class="ex-num">0${i+1}</div>
+    <div>
+      <div class="ex-name">${ex.name}</div>
+      <div class="ex-tags"><span class="ex-tag t-sets">${ex.sets} sets</span><span class="ex-tag t-reps">${ex.reps}</span><span class="ex-tag t-lvl">${ex.level}</span></div>
+      <div class="ex-desc">${ex.desc}</div>
+    </div>
+  </div>`).join('');
+  document.getElementById('panelContent').innerHTML = `
+    <div class="muscle-diagram"><div class="diagram-glow"></div><svg viewBox="0 0 400 160" width="100%" height="100%" style="position:relative;z-index:1">${blobs}</svg></div>
+    <div class="head-tabs">${tabs}</div>
+    <div class="exercises-label">Exercises — ${head.name}</div>
+    ${exs}`;
+}
+
+// =================== PLANS ===================
+function renderPlans() {
+  document.getElementById('plansGrid').innerHTML = PLANS.map(p => `
+    <div class="plan-card reveal">
+      <div class="plan-icon">${p.icon}</div>
+      <h3 class="plan-name">${p.name}</h3>
+      <p class="plan-desc">${p.desc}</p>
+      <div class="plan-tags">${p.tags.map(t=>`<span class="plan-tag">${t}</span>`).join('')}</div>
+      <div class="plan-days">${p.days.map(d=>`<div class="plan-day${d?' on':''}"></div>`).join('')}</div>
+      <button class="plan-btn">View Program</button>
+    </div>`).join('');
+}
+
+// =================== MARQUEE ===================
+function buildMarquee() {
+  const items = ['Strength Training','Muscle Hypertrophy','Bodybuilding','Athletic Performance','Core Power','Mobility Work','Progressive Overload','Recovery Science','Form Mastery','Injury Prevention'];
+  document.getElementById('marqueeTrack').innerHTML = [...items,...items].map(t =>
+    `<div class="marquee-item"><span class="m-dot"></span>${t}</div>`).join('');
+}
+
+// =================== STATS ===================
+function animateStats() {
+  document.querySelectorAll('.stat-value[data-target]').forEach(el => {
+    const target = +el.dataset.target, suffix = el.dataset.suffix||'';
+    let v=0; const step = target/(1800/16);
+    const t = setInterval(()=>{ v=Math.min(v+step,target); el.textContent=Math.floor(v)+suffix; if(v>=target) clearInterval(t); }, 16);
   });
 }
 
-observe('.feat-card', 0, 80);
-observe('.stat-card', 0, 80);
-observe('.step', 0, 100);
-observe('.test-card', 0, 90);
-['.fade-up', '.fade-left', '.fade-right', '.cta-card', '.demo-text', '.ring-demo']
-  .forEach(s => document.querySelectorAll(s).forEach(el => io.observe(el)));
-
-/* ─ Counter animation ─ */
-function countUp(el) {
-  const target = parseFloat(el.dataset.t);
-  const dur = 1800;
-  const start = performance.now();
-  function step(now) {
-    const p = Math.min((now - start) / dur, 1);
-    const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = Number.isInteger(target) ? Math.floor(eased * target) : (eased * target).toFixed(1);
-    if (p < 1) requestAnimationFrame(step);
-    else el.textContent = target % 1 === 0 ? target : target.toFixed(1);
+// =================== GSAP ===================
+function initGSAP() {
+  if (typeof gsap==='undefined') {
+    document.querySelectorAll('.hero-badge,.hero-title,.hero-subtitle,.hero-actions,.hero-stats,.reveal')
+      .forEach(el=>{el.style.opacity='1';el.style.transform='none';});
+    return;
   }
-  requestAnimationFrame(step);
+  gsap.registerPlugin(ScrollTrigger);
+  const tl = gsap.timeline({delay:0.15});
+  tl.to('.hero-badge',    {opacity:1,y:0,duration:0.6, ease:'power3.out'})
+    .to('.hero-title',    {opacity:1,y:0,duration:0.85,ease:'power3.out'},'-=0.3')
+    .to('.hero-subtitle', {opacity:1,y:0,duration:0.65,ease:'power3.out'},'-=0.4')
+    .to('.hero-actions',  {opacity:1,y:0,duration:0.6, ease:'power3.out'},'-=0.3')
+    .to('.hero-stats',    {opacity:1,    duration:0.6, ease:'power3.out'},'-=0.2');
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.to(el,{opacity:1,y:0,duration:0.85,ease:'power3.out',
+      scrollTrigger:{trigger:el,start:'top 86%',once:true}});
+  });
+  ScrollTrigger.create({trigger:'#stats',start:'top 70%',once:true,onEnter:animateStats});
 }
-const cntIO = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { countUp(e.target); cntIO.unobserve(e.target); } });
-}, { threshold: 0.5 });
-document.querySelectorAll('.cnt').forEach(el => cntIO.observe(el));
 
-/* ─ Magnetic buttons (subtle, no cursor weirdness) ─ */
-document.querySelectorAll('.btn-primary, .btn-outline, .nbtn').forEach(btn => {
-  btn.addEventListener('mousemove', e => {
-    const r = btn.getBoundingClientRect();
-    const dx = (e.clientX - r.left - r.width / 2) * .18;
-    const dy = (e.clientY - r.top - r.height / 2) * .18;
-    btn.style.transform = `translate(${dx}px,${dy}px)`;
-  });
-  btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+// =================== BOOT ===================
+document.addEventListener('DOMContentLoaded', () => {
+  buildMarquee();
+  setView('front');
+  buildSidePanels();
+  renderPlans();
+  setTimeout(initGSAP, 80);
 });
-
-/* ─ Habit card tilt (light) ─ */
-document.querySelectorAll('.feat-card, .test-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const dx = (e.clientX - r.left - r.width / 2) / (r.width / 2);
-    const dy = (e.clientY - r.top - r.height / 2) / (r.height / 2);
-    card.style.transform = `translateY(-6px) rotateY(${dx * 4}deg) rotateX(${-dy * 4}deg)`;
-    card.style.transformStyle = 'preserve-3d';
-  });
-  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-});
-
-/* ─ Demo ring ring-fill circumference ─ */
-document.getElementById('ring-fill').style.strokeDasharray = circ;
+document.addEventListener('keydown', e => { if(e.key==='Escape') closePanel(); });
 </script>
 </body>
 </html>
