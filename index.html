@@ -3,756 +3,1021 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Lumina — Digital Creative Studio</title>
+<title>HabitFlow — Build Habits That Stick</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,700;0,900;1,900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
+/* ══ RESET & TOKENS ══ */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
-:root {
-  --blur: blur(40px) saturate(180%);
-  --glass: rgba(255,255,255,0.06);
-  --glass-h: rgba(255,255,255,0.10);
-  --border: rgba(255,255,255,0.12);
-  --border-h: rgba(255,255,255,0.22);
-  --shine: rgba(255,255,255,0.18);
-  --t: #F0EFFF;
-  --m: rgba(240,239,255,0.55);
-  --bg: #07060F;
+:root{
+  /* Skill-recommended palette: Mental Health + Wellness pastel */
+  --bg:        #FAF5FF;
+  --bg2:       #FDF2F8;
+  --white:     #FFFFFF;
+  --purple:    #A855F7;
+  --purple-s:  #7C3AED;
+  --purple-l:  #E9D5FF;
+  --purple-xl: #F3E8FF;
+  --pink:      #EC4899;
+  --pink-l:    #FBCFE8;
+  --pink-xl:   #FDF2F8;
+  --green:     #10B981;
+  --green-l:   #D1FAE5;
+  --peach:     #FB923C;
+  --peach-l:   #FED7AA;
+  --blue:      #60A5FA;
+  --blue-l:    #DBEAFE;
+  --yellow:    #FBBF24;
+  --yellow-l:  #FEF3C7;
+  --text:      #3B1764;
+  --muted:     #7C5B9B;
+  --border:    #E9D5FF;
+  /* Skill-recommended claymorphism shadows */
+  --clay: 4px 4px 12px rgba(168,85,247,.12), -2px -2px 8px rgba(255,255,255,.9), inset 0 1px 0 rgba(255,255,255,.8);
+  --clay-hover: 6px 6px 18px rgba(168,85,247,.2), -2px -2px 10px rgba(255,255,255,.95), inset 0 1px 0 rgba(255,255,255,.9);
+  --clay-press: inset 2px 2px 8px rgba(168,85,247,.15), inset -2px -2px 6px rgba(255,255,255,.7);
+  --r: 20px; --r-sm: 14px; --r-lg: 28px;
 }
 
-html { scroll-behavior: smooth }
-
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--t);
-  overflow-x: hidden;
-  cursor: none;
+html{scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  line-height:1.6;
 }
 
-/* ── Cursor ── */
-#cur {
-  width: 14px; height: 14px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9999;
-  mix-blend-mode: difference;
-  transition: transform .12s, width .3s, height .3s;
+/* ══ SCROLL BAR (thin, pastel) ══ */
+#sb{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--purple),var(--pink),var(--peach));
+  z-index:300;border-radius:0 2px 2px 0;
+  transition:width .08s linear;
 }
-#cring {
-  width: 44px; height: 44px;
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 50%;
-  position: fixed; top: 0; left: 0;
-  pointer-events: none; z-index: 9998;
-  backdrop-filter: blur(2px);
-  transition: transform .18s ease;
-}
-body:has(a:hover) #cur, body:has(button:hover) #cur { transform: scale(2.8) }
-body:has(a:hover) #cring, body:has(button:hover) #cring { width: 64px; height: 64px }
-
-/* ── Scroll bar ── */
-#sb {
-  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
-  background: linear-gradient(90deg,
-    rgba(120,80,255,1), rgba(80,200,255,1),
-    rgba(255,100,180,1), rgba(120,80,255,1));
-  background-size: 300% 100%;
-  animation: sbshift 3s linear infinite;
-  z-index: 300; box-shadow: 0 0 16px rgba(120,80,255,.8);
-}
-@keyframes sbshift { to { background-position: 300% 0 } }
-
-/* ── Background blobs ── */
-.blobs {
-  position: fixed; inset: 0; z-index: 0;
-  overflow: hidden; pointer-events: none;
-}
-.blob {
-  position: absolute; border-radius: 50%;
-  filter: blur(80px); will-change: transform;
-  animation: blobFloat linear infinite;
-}
-.b1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(108,60,255,.55) 0%, rgba(60,20,180,.2) 70%, transparent 100%); top: -15%; left: -12%; animation-duration: 22s }
-.b2 { width: 550px; height: 550px; background: radial-gradient(circle, rgba(0,200,255,.45) 0%, rgba(0,100,200,.15) 70%, transparent 100%); bottom: -10%; right: -8%; animation-duration: 28s; animation-direction: reverse }
-.b3 { width: 450px; height: 450px; background: radial-gradient(circle, rgba(255,60,160,.4) 0%, rgba(180,20,100,.1) 70%, transparent 100%); top: 40%; left: 30%; animation-duration: 19s; animation-delay: -7s }
-.b4 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,180,0,.35) 0%, transparent 70%); top: 10%; right: 15%; animation-duration: 25s; animation-delay: -12s }
-.b5 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,255,180,.25) 0%, transparent 70%); bottom: 20%; left: 10%; animation-duration: 32s; animation-delay: -5s }
-
-@keyframes blobFloat {
-  0%   { transform: translate(0,0) scale(1) }
-  25%  { transform: translate(40px,-60px) scale(1.06) }
-  50%  { transform: translate(-30px,40px) scale(.94) }
-  75%  { transform: translate(50px,30px) scale(1.04) }
-  100% { transform: translate(0,0) scale(1) }
-}
-
-/* ── Morphing blob SVG hero ── */
-#morph-blob {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(700px,90vw); height: min(700px,90vh);
-  z-index: 0; opacity: .18; pointer-events: none;
-}
-
-/* ── Glass mixin (applied to cards) ── */
-.glass {
-  background: var(--glass);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  position: relative;
-  overflow: hidden;
-  transition: background .35s, border-color .35s, box-shadow .35s, transform .4s;
-}
-.glass::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 50%;
-  background: linear-gradient(180deg, var(--shine) 0%, transparent 100%);
-  border-radius: 24px 24px 0 0;
-  pointer-events: none;
-}
-.glass:hover {
-  background: var(--glass-h);
-  border-color: var(--border-h);
-  box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 32px 80px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.2);
-}
-
-/* ── Liquid border glow (animated) ── */
-.glass-glow::after {
-  content: '';
-  position: absolute; inset: -1px;
-  border-radius: 25px;
-  padding: 1px;
-  background: conic-gradient(from var(--a,0deg), rgba(120,80,255,.6), rgba(0,200,255,.6), rgba(255,80,160,.6), rgba(120,80,255,.6));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude;
-  opacity: 0; transition: opacity .4s;
-  animation: spin 4s linear infinite;
-  pointer-events: none;
-}
-.glass-glow:hover::after { opacity: 1 }
-@keyframes spin { to { --a: 360deg } }
-@property --a { syntax: '<angle>'; initial-value: 0deg; inherits: false }
-
-/* ── Shimmer sweep ── */
-.glass-shimmer::before {
-  content: '';
-  position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
-  transition: left .6s ease;
-  pointer-events: none; z-index: 1;
-}
-.glass-shimmer:hover::before { left: 160% }
-
-/* ── Sections ── */
-section { position: relative; z-index: 2 }
 
 /* ══ NAV ══ */
-nav {
-  position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
-  z-index: 100; width: calc(100% - 32px); max-width: 1200px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 20px;
+nav{
+  position:fixed;top:12px;left:50%;transform:translateX(-50%);
+  z-index:100;width:calc(100% - 32px);max-width:1100px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 22px;
+  background:rgba(250,245,255,.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:2px solid rgba(233,213,255,.6);
+  border-radius:100px;
+  box-shadow:var(--clay);
+  transition:box-shadow .3s;
 }
-.nav-glass {
-  background: rgba(255,255,255,.07);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255,255,255,.13);
-  border-radius: 100px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 4px 30px rgba(0,0,0,.3);
-  position: absolute; inset: 0; border-radius: 100px;
-  transition: box-shadow .3s;
+.nav-logo{
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.3rem;
+  color:var(--purple);letter-spacing:.01em;display:flex;align-items:center;gap:8px;
 }
-nav.glow .nav-glass { box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 0 60px rgba(108,60,255,.2), 0 4px 30px rgba(0,0,0,.3) }
-.nav-inner { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 24px }
-.logo { font-family: 'Archivo', sans-serif; font-weight: 900; font-size: 1.15rem; letter-spacing: -.04em; color: var(--t) }
-.nav-links { display: flex; gap: 26px; list-style: none }
-.nav-links a { color: var(--m); font-size: .82rem; font-weight: 500; text-decoration: none; cursor: none; transition: color .2s }
-.nav-links a:hover, .nav-links a.on { color: var(--t) }
-.nbtn {
-  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
-  color: var(--t); padding: 9px 20px; border-radius: 100px;
-  font-family: 'Inter', sans-serif; font-weight: 500; font-size: .82rem;
-  cursor: none; backdrop-filter: blur(12px); transition: background .25s, border-color .25s, box-shadow .25s;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+.nav-logo-icon{
+  width:32px;height:32px;border-radius:10px;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(168,85,247,.35);
 }
-.nbtn:hover { background: rgba(255,255,255,.2); border-color: rgba(255,255,255,.35); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 8px 24px rgba(108,60,255,.3) }
-
-/* ══ SIDE DOTS ══ */
-#dots { position: fixed; right: 22px; top: 50%; transform: translateY(-50%); z-index: 200; display: flex; flex-direction: column; gap: 10px }
-.dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.2);
-  cursor: none; transition: all .35s; backdrop-filter: blur(4px);
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{
+  color:var(--muted);font-size:.88rem;font-weight:600;
+  text-decoration:none;cursor:pointer;
+  transition:color .2s;
 }
-.dot.on { background: rgba(255,255,255,.85); box-shadow: 0 0 12px rgba(255,255,255,.6); transform: scale(1.4) }
+.nav-links a:hover{color:var(--purple)}
+.nav-links a.on{color:var(--purple)}
+.nbtn{
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  color:#fff;border:none;padding:10px 22px;
+  border-radius:100px;font-family:'Nunito',sans-serif;
+  font-weight:700;font-size:.88rem;cursor:pointer;
+  box-shadow:0 4px 14px rgba(168,85,247,.4);
+  transition:transform .2s,box-shadow .2s;
+}
+.nbtn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(168,85,247,.45)}
+.nbtn:active{transform:translateY(0)}
 
 /* ══ HERO ══ */
-#hero { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 120px 24px 80px; position: relative; overflow: hidden }
-
-/* Ripple canvas */
-#ripple-canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .35 }
-
-/* Grid lines */
-.hero-grid {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-  background-size: 64px 64px;
-  -webkit-mask: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
-  mask: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+#hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:100px 24px 60px;
+  position:relative;overflow:hidden;
+}
+/* Soft bg blobs */
+.hero-blob{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;animation:blobDrift ease-in-out infinite}
+.hb1{width:500px;height:500px;background:rgba(233,213,255,.55);top:-10%;left:-8%;animation-duration:20s}
+.hb2{width:400px;height:400px;background:rgba(251,207,232,.5);bottom:5%;right:-5%;animation-duration:26s;animation-direction:reverse}
+.hb3{width:300px;height:300px;background:rgba(209,250,229,.4);top:50%;left:40%;animation-duration:18s;animation-delay:-8s}
+@keyframes blobDrift{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-40px) scale(1.05)}
+  66%{transform:translate(-20px,30px) scale(.95)}
 }
 
-.hero-content { position: relative; z-index: 3; max-width: 960px }
+.hero-inner{
+  max-width:1100px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+  position:relative;z-index:1;
+}
+.hero-text{animation:fadeUp .8s .1s both}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border-radius:100px;
+  background:var(--purple-xl);border:2px solid var(--purple-l);
+  font-size:.75rem;font-weight:700;color:var(--purple);
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px;
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 6px rgba(16,185,129,0)}}
+h1{
+  font-family:'Fredoka',sans-serif;font-size:clamp(2.6rem,5vw,4rem);
+  font-weight:700;line-height:1.1;letter-spacing:-.01em;
+  margin-bottom:20px;color:var(--text);
+}
+.h1-accent{
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:1.05rem;color:var(--muted);line-height:1.7;
+  max-width:440px;margin-bottom:36px;font-weight:400;
+}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  color:#fff;border:none;padding:14px 28px;border-radius:100px;
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
+  cursor:pointer;text-decoration:none;
+  box-shadow:0 4px 20px rgba(168,85,247,.4);
+  transition:transform .2s,box-shadow .2s;
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(168,85,247,.5)}
+.btn-primary:active{transform:translateY(-1px)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--white);color:var(--purple);
+  border:2px solid var(--purple-l);padding:12px 24px;border-radius:100px;
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;
+  cursor:pointer;text-decoration:none;
+  box-shadow:var(--clay);
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+}
+.btn-outline:hover{transform:translateY(-2px);box-shadow:var(--clay-hover);border-color:var(--purple)}
+.hero-social{margin-top:24px;display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.82rem;font-weight:500}
+.avatar-stack{display:flex}
+.avatar{width:28px;height:28px;border-radius:50%;border:2px solid var(--white);margin-left:-8px;font-size:.6rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center}
+.avatar:first-child{margin-left:0}
 
-.hbadge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px 6px 8px; border-radius: 100px;
-  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
-  backdrop-filter: blur(16px); font-size: .7rem; font-weight: 500;
-  letter-spacing: .06em; color: rgba(255,255,255,.8); text-transform: uppercase;
-  margin-bottom: 36px; box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
-  opacity: 0; animation: fu .7s .1s forwards;
+/* ── Hero demo card ── */
+.hero-demo{animation:fadeUp .8s .3s both;position:relative}
+.demo-card{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:var(--r-lg);padding:28px;
+  box-shadow:var(--clay);
+  position:relative;overflow:hidden;
 }
-.hbadge-pill {
-  background: linear-gradient(90deg, rgba(120,80,255,.8), rgba(0,200,255,.8));
-  padding: 3px 10px; border-radius: 100px; font-size: .66rem; font-weight: 700;
-  color: #fff; letter-spacing: .08em;
+.demo-card::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:120px;height:120px;
+  background:radial-gradient(circle,rgba(233,213,255,.8),transparent 70%);
+  border-radius:50%;
+}
+.demo-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;
+}
+.demo-title{font-family:'Fredoka',sans-serif;font-size:1.1rem;font-weight:600;color:var(--text)}
+.demo-date{font-size:.78rem;color:var(--muted);font-weight:500;background:var(--purple-xl);padding:4px 10px;border-radius:100px}
+
+/* Week dots */
+.week-row{display:flex;gap:6px;margin-bottom:20px}
+.week-dot{
+  flex:1;aspect-ratio:1;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;color:var(--muted);
+  background:var(--bg);border:2px solid var(--border);
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  cursor:default;
+}
+.week-dot.done{background:var(--purple);border-color:var(--purple);color:#fff;box-shadow:0 2px 8px rgba(168,85,247,.4)}
+.week-dot.today{border-color:var(--purple);color:var(--purple);font-weight:800}
+
+/* Habit rows */
+.habits-list{display:flex;flex-direction:column;gap:10px}
+.habit-row{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 16px;border-radius:var(--r-sm);
+  background:var(--bg);border:2px solid transparent;
+  cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  user-select:none;
+}
+.habit-row:hover{border-color:var(--border);transform:translateX(4px)}
+.habit-row.checked{
+  background:var(--purple-xl);border-color:var(--purple-l);
+  transform:translateX(4px);
+}
+.habit-check{
+  width:26px;height:26px;border-radius:50%;border:2.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  background:var(--white);
+}
+.habit-row.checked .habit-check{
+  background:var(--purple);border-color:var(--purple);
+  box-shadow:0 2px 10px rgba(168,85,247,.4);
+  animation:checkPop .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes checkPop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+.habit-check svg{opacity:0;transition:opacity .15s}
+.habit-row.checked .habit-check svg{opacity:1}
+.habit-info{flex:1}
+.habit-name{font-weight:600;font-size:.9rem;color:var(--text);transition:color .2s}
+.habit-row.checked .habit-name{color:var(--purple-s)}
+.habit-meta{font-size:.74rem;color:var(--muted);margin-top:2px;font-weight:500}
+.habit-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:.9rem;
+}
+.habit-streak{
+  font-size:.72rem;font-weight:700;color:var(--peach);
+  background:var(--peach-l);padding:3px 8px;border-radius:100px;
+  display:flex;align-items:center;gap:3px;white-space:nowrap;
 }
 
-h1 {
-  font-family: 'Archivo', sans-serif;
-  font-size: clamp(3.5rem, 9vw, 8.5rem);
-  font-weight: 900; line-height: .93; letter-spacing: -.05em;
-  opacity: 0; animation: fu 1s .3s forwards;
+/* Progress bar at bottom */
+.demo-progress{margin-top:20px;padding-top:16px;border-top:2px solid var(--border)}
+.progress-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-text{font-size:.8rem;font-weight:700;color:var(--text)}
+.progress-pct{font-size:.8rem;font-weight:700;color:var(--purple)}
+.progress-bar{height:10px;border-radius:100px;background:var(--purple-xl);overflow:hidden}
+.progress-fill{
+  height:100%;border-radius:100px;
+  background:linear-gradient(90deg,var(--purple),var(--pink));
+  transition:width .6s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 2px 6px rgba(168,85,247,.35);
+  width:0%;
 }
-.h1-glass {
-  display: inline-block;
-  background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(200,180,255,.85) 40%, rgba(100,220,255,.85) 70%, rgba(255,130,200,.9) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  background-size: 300% 300%; animation: iridescent 6s ease-in-out infinite;
-  filter: drop-shadow(0 0 40px rgba(120,80,255,.35));
-}
-@keyframes iridescent {
-  0%   { background-position: 0% 50% }
-  50%  { background-position: 100% 50% }
-  100% { background-position: 0% 50% }
-}
-.hero-sub {
-  max-width: 520px; margin: 28px auto 52px;
-  font-size: 1.05rem; color: var(--m); line-height: 1.72; font-weight: 300;
-  opacity: 0; animation: fu .8s .55s forwards;
-}
-.hbtns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fu .8s .75s forwards }
 
-.btn-glass {
-  display: inline-flex; align-items: center; gap: 9px;
-  padding: 14px 30px; border-radius: 100px;
-  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
-  color: var(--t); font-family: 'Inter', sans-serif; font-weight: 500; font-size: .9rem;
-  cursor: none; text-decoration: none;
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 8px 32px rgba(0,0,0,.25);
-  transition: background .25s, border-color .25s, transform .25s, box-shadow .25s;
-  position: relative; overflow: hidden;
+/* Floating badge on card */
+.streak-badge{
+  position:absolute;top:-14px;right:20px;
+  background:linear-gradient(135deg,var(--peach),var(--yellow));
+  color:#fff;font-family:'Fredoka',sans-serif;font-weight:600;font-size:.82rem;
+  padding:6px 14px;border-radius:100px;
+  box-shadow:0 4px 12px rgba(251,146,60,.4);
+  display:flex;align-items:center;gap:5px;
+  animation:float 3s ease-in-out infinite;
 }
-.btn-glass::before {
-  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent);
-  transition: left .5s ease;
-}
-.btn-glass:hover::before { left: 160% }
-.btn-glass:hover { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.35); transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 16px 48px rgba(0,0,0,.35), 0 0 40px rgba(120,80,255,.25) }
-.btn-filled {
-  background: linear-gradient(135deg, rgba(120,80,255,.9), rgba(0,200,255,.8));
-  border-color: transparent;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 8px 32px rgba(120,80,255,.4);
-}
-.btn-filled:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 16px 48px rgba(120,80,255,.55) }
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-.hscroll {
-  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  color: var(--m); font-size: .67rem; letter-spacing: .12em; text-transform: uppercase;
-  opacity: 0; animation: fu 1s 1.3s forwards;
+/* Confetti container */
+#confetti-container{position:fixed;inset:0;pointer-events:none;z-index:500;overflow:hidden}
+.confetti-piece{
+  position:absolute;width:8px;height:8px;border-radius:2px;
+  animation:confettiFall linear forwards;
+  pointer-events:none;
 }
-.hline { width: 1px; height: 44px; background: linear-gradient(to bottom, rgba(255,255,255,.5), transparent); animation: sp 2.2s ease-in-out infinite }
-@keyframes sp { 0%,100% { opacity: 1; transform: scaleY(1) } 50% { opacity: .2; transform: scaleY(.4) } }
-@keyframes fu { from { opacity: 0; transform: translateY(22px) } to { opacity: 1; transform: none } }
+@keyframes confettiFall{
+  0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
+  100%{transform:translate(var(--dx),100vh) rotate(var(--rot)) scale(.5);opacity:0}
+}
 
 /* ══ MARQUEE ══ */
-.mq {
-  overflow: hidden; padding: 18px 0; position: relative; z-index: 2;
-  border-top: 1px solid rgba(255,255,255,.06); border-bottom: 1px solid rgba(255,255,255,.06);
-  background: rgba(255,255,255,.02);
+.mq-wrap{
+  overflow:hidden;padding:16px 0;
+  border-top:2px solid var(--border);border-bottom:2px solid var(--border);
+  background:var(--white);position:relative;z-index:2;
 }
-.mq-track { display: flex; white-space: nowrap; animation: mq 32s linear infinite }
-.mq:hover .mq-track { animation-play-state: paused }
-@keyframes mq { to { transform: translateX(-50%) } }
-.mq-item {
-  display: inline-flex; align-items: center; gap: 16px; padding: 0 32px;
-  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: .78rem;
-  letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.3);
+.mq-track{display:flex;white-space:nowrap;animation:mq 30s linear infinite}
+.mq-wrap:hover .mq-track{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.mq-item{
+  display:inline-flex;align-items:center;gap:10px;padding:0 28px;
+  font-family:'Fredoka',sans-serif;font-weight:500;font-size:.9rem;
+  color:var(--muted);letter-spacing:.02em;
 }
-.mq-gem { width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(135deg, rgba(120,80,255,.8), rgba(0,200,255,.8)); flex-shrink: 0 }
+.mq-dot{width:5px;height:5px;border-radius:50%;background:var(--purple-l);flex-shrink:0}
+
+/* ══ SECTION SHARED ══ */
+section{position:relative;z-index:2}
+.section-wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+.section-head{text-align:center;margin-bottom:56px}
+.stag{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:100px;margin-bottom:14px;
+  background:var(--purple-xl);border:2px solid var(--purple-l);
+  font-size:.72rem;font-weight:700;color:var(--purple);
+  letter-spacing:.08em;text-transform:uppercase;
+}
+h2{
+  font-family:'Fredoka',sans-serif;
+  font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:700;line-height:1.1;color:var(--text);margin-bottom:12px;
+}
+.sub{color:var(--muted);font-size:.98rem;max-width:460px;margin:0 auto;line-height:1.65;font-weight:400}
+
+/* ══ FEATURES ══ */
+#features{padding:100px 0}
+.feat-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+}
+.feat-card{
+  padding:36px 28px;
+  background:var(--white);border:2px solid var(--border);border-radius:var(--r);
+  box-shadow:var(--clay);
+  opacity:0;transform:translateY(40px);
+  transition:transform .3s,box-shadow .3s,border-color .3s;
+  cursor:default;
+}
+.feat-card:hover{
+  transform:translateY(-6px) !important;
+  box-shadow:var(--clay-hover);border-color:var(--purple-l);
+}
+.feat-icon{
+  width:52px;height:52px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:20px;
+  box-shadow:var(--clay);border:2px solid var(--white);
+}
+.feat-card h3{font-family:'Fredoka',sans-serif;font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:10px}
+.feat-card p{color:var(--muted);font-size:.88rem;line-height:1.68;font-weight:400}
+
+/* ══ HOW IT WORKS ══ */
+#how{padding:80px 0;background:var(--bg2)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative}
+.steps::before{
+  content:'';position:absolute;top:40px;left:calc(16.67% + 20px);right:calc(16.67% + 20px);
+  height:2px;background:linear-gradient(90deg,var(--purple-l),var(--pink-l));
+  border-radius:2px;
+}
+.step{text-align:center;padding:32px 20px;opacity:0;transform:translateY(40px)}
+.step-num{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  color:#fff;font-family:'Fredoka',sans-serif;font-size:1.3rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  box-shadow:0 4px 14px rgba(168,85,247,.4);
+  position:relative;z-index:1;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.step:hover .step-num{transform:scale(1.15)}
+.step h3{font-family:'Fredoka',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:8px;color:var(--text)}
+.step p{color:var(--muted);font-size:.87rem;line-height:1.65;font-weight:400}
 
 /* ══ STATS ══ */
-#stats { padding: 80px 24px; max-width: 1240px; margin: 0 auto }
-.sg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px }
-.sc {
-  padding: 36px 24px; text-align: center;
-  opacity: 0; transform: translateY(50px) scale(.95);
-  transition: transform .4s;
-  cursor: none;
+#stats{padding:80px 0}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.stat-card{
+  padding:32px 20px;text-align:center;
+  background:var(--white);border:2px solid var(--border);border-radius:var(--r);
+  box-shadow:var(--clay);opacity:0;transform:translateY(30px);
+  transition:transform .3s,box-shadow .3s;cursor:default;
 }
-.sc:hover { transform: translateY(-8px) !important }
-.snum {
-  font-family: 'Archivo', sans-serif; font-size: 3.2rem; font-weight: 900; line-height: 1;
-  background: linear-gradient(135deg, rgba(255,255,255,1), rgba(180,160,255,.8));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+.stat-card:hover{transform:translateY(-4px) !important;box-shadow:var(--clay-hover)}
+.stat-num{
+  font-family:'Fredoka',sans-serif;font-size:2.6rem;font-weight:700;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;
 }
-.ssfx { color: rgba(120,80,255,.9); font-size: 2.5rem }
-.slbl { color: var(--m); font-size: .78rem; margin-top: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase }
+.stat-sfx{font-size:2rem}
+.stat-lbl{color:var(--muted);font-size:.8rem;font-weight:600;margin-top:8px;text-transform:uppercase;letter-spacing:.06em}
 
-/* ══ SECTION HEADER ══ */
-.sh { text-align: center; margin-bottom: 72px }
-.stag {
-  display: inline-block; padding: 5px 14px; border-radius: 100px;
-  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(12px); font-size: .67rem; font-weight: 600;
-  letter-spacing: .13em; text-transform: uppercase; color: rgba(255,255,255,.65);
-  margin-bottom: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
-  opacity: 0; transform: translateY(14px); transition: opacity .5s, transform .5s;
+/* ══ DEMO INTERACTIVE ══ */
+#demo{padding:100px 0}
+.demo-section-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
 }
-.stag.visible { opacity: 1; transform: none }
-.ldraw {
-  width: 0; height: 1px; margin: 14px auto 28px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
-  transition: width 1.1s cubic-bezier(.16,1,.3,1);
+.demo-text{opacity:0;transform:translateX(-40px)}
+.demo-text h2{text-align:left;margin-bottom:16px}
+.demo-text .sub{text-align:left;margin:0 0 28px}
+.demo-features{display:flex;flex-direction:column;gap:14px}
+.demo-feat{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;border-radius:var(--r-sm);
+  background:var(--white);border:2px solid var(--border);
+  box-shadow:var(--clay);
+  transition:border-color .25s,transform .25s;
 }
-.ldraw.visible { width: 100px }
-h2 { font-family: 'Archivo', sans-serif; font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 900; line-height: 1.05; letter-spacing: -.04em }
-.ssub {
-  color: var(--m); font-size: .96rem; margin-top: 14px; max-width: 460px; margin-left: auto; margin-right: auto;
-  font-weight: 300; line-height: 1.7;
-  opacity: 0; filter: blur(10px); transform: translateY(10px);
-  transition: opacity .8s, filter .8s, transform .8s;
+.demo-feat:hover{border-color:var(--purple-l);transform:translateX(4px)}
+.demo-feat-icon{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.ssub.visible { opacity: 1; filter: none; transform: none }
+.demo-feat-text{font-weight:600;font-size:.88rem;color:var(--text)}
+.demo-feat-desc{font-size:.78rem;color:var(--muted);font-weight:400}
 
-/* ══ SERVICES ══ */
-#services { padding: 130px 24px }
-.svg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 1240px; margin: 0 auto }
-.svc {
-  padding: 38px 30px;
-  opacity: 0; transform: translateY(60px);
-  transition: transform .45s;
+/* Big interactive ring */
+.ring-demo{
+  opacity:0;transform:translateX(40px);
+  display:flex;flex-direction:column;align-items:center;gap:24px;
 }
-.svc:hover { transform: translateY(-10px) !important }
-.sico {
-  width: 52px; height: 52px; border-radius: 14px;
-  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14);
-  backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center;
-  margin-bottom: 22px; box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
-  transition: transform .3s, box-shadow .3s;
+.ring-wrap{position:relative;width:200px;height:200px}
+.ring-svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--purple-xl);stroke-width:14}
+.ring-fill{
+  fill:none;stroke-width:14;stroke-linecap:round;
+  stroke:url(#ringGrad);
+  stroke-dasharray:565;stroke-dashoffset:565;
+  transition:stroke-dashoffset 1s cubic-bezier(.16,1,.3,1);
 }
-.svc:hover .sico { transform: scale(1.12) rotate(6deg); box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 8px 24px rgba(120,80,255,.3) }
-.svc h3 { font-family: 'Archivo', sans-serif; font-size: 1.18rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -.02em }
-.svc p { color: var(--m); font-size: .87rem; line-height: 1.72; font-weight: 300 }
-
-/* ══ WORK ══ */
-#work { padding: 130px 24px }
-.wg { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 1240px; margin: 0 auto }
-.wc {
-  border-radius: 24px; overflow: hidden; position: relative;
-  cursor: none;
-  opacity: 0; clip-path: inset(0 0 100% 0);
-  transition: clip-path .9s cubic-bezier(.16,1,.3,1), box-shadow .4s;
+.ring-label{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;
 }
-.wc.visible { clip-path: inset(0 0 0% 0); opacity: 1 }
-.wc:first-child { grid-column: span 2 }
-.wc:hover { box-shadow: 0 36px 90px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08) }
-.wimg { width: 100%; aspect-ratio: 16/9; overflow: hidden; position: relative }
-.wc:first-child .wimg { aspect-ratio: 21/8 }
-.wimgi { width: 100%; height: 100%; transition: transform .7s ease }
-.wc:hover .wimgi { transform: scale(1.06) }
-.wov {
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(7,6,15,.95) 0%, rgba(7,6,15,.2) 50%, transparent 100%);
-  display: flex; flex-direction: column; justify-content: flex-end; padding: 28px;
-  opacity: 0; transition: opacity .35s;
+.ring-pct{font-family:'Fredoka',sans-serif;font-size:2rem;font-weight:700;color:var(--purple);display:block}
+.ring-sub{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.mini-habits{display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px}
+.mini-habit{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-radius:var(--r-sm);
+  background:var(--white);border:2px solid var(--border);
+  box-shadow:var(--clay);cursor:pointer;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
 }
-.wc:hover .wov { opacity: 1 }
-.wtag { font-size: .67rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; color: rgba(0,200,255,.9); margin-bottom: 8px }
-.wtitle { font-family: 'Archivo', sans-serif; font-size: 1.35rem; font-weight: 700; letter-spacing: -.02em }
-.warr {
-  position: absolute; top: 18px; right: 18px;
-  width: 38px; height: 38px;
-  background: rgba(255,255,255,.1); backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,.18); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; transform: scale(.6); transition: opacity .3s, transform .3s;
-}
-.wc:hover .warr { opacity: 1; transform: scale(1) }
-
-/* ══ PROCESS ══ */
-#process { padding: 130px 24px }
-.pl { max-width: 820px; margin: 0 auto; position: relative }
-.pl::before {
-  content: ''; position: absolute; left: 38px; top: 0; bottom: 0; width: 1px;
-  background: linear-gradient(to bottom, rgba(120,80,255,.6), rgba(0,200,255,.3), transparent);
-  transform: scaleY(0); transform-origin: top; transition: transform 1.6s cubic-bezier(.16,1,.3,1);
-}
-.pl.vis::before { transform: scaleY(1) }
-.pi {
-  display: grid; grid-template-columns: 80px 1fr; gap: 28px; padding: 36px 0;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  opacity: 0; transform: translateX(-40px);
-  transition: opacity .65s, transform .65s cubic-bezier(.16,1,.3,1), border-color .3s;
-}
-.pi:last-child { border-bottom: none }
-.pi.active-step { border-color: rgba(120,80,255,.2) }
-.pnum {
-  font-family: 'Archivo', sans-serif; font-size: 3.5rem; font-weight: 900; line-height: 1;
-  color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.15);
-  transition: -webkit-text-stroke-color .35s;
-}
-.pi:hover .pnum, .pi.active-step .pnum { -webkit-text-stroke-color: rgba(120,80,255,.7) }
-.pcont h3 { font-family: 'Archivo', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -.02em }
-.pcont p { color: var(--m); line-height: 1.72; font-size: .9rem; font-weight: 300 }
+.mini-habit:hover{border-color:var(--purple-l);transform:scale(1.02)}
+.mini-habit.done{background:var(--purple-xl);border-color:var(--purple-l)}
+.mh-left{display:flex;align-items:center;gap:10px}
+.mh-name{font-weight:600;font-size:.85rem;color:var(--text)}
+.mh-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);transition:all .25s;background:var(--bg)}
+.mini-habit.done .mh-dot{background:var(--purple);border-color:var(--purple);box-shadow:0 0 0 3px rgba(168,85,247,.2)}
+.mh-bar-wrap{width:60px;height:5px;border-radius:100px;background:var(--purple-xl);overflow:hidden}
+.mh-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width .4s cubic-bezier(.16,1,.3,1)}
 
 /* ══ TESTIMONIALS ══ */
-#testimonials { padding: 130px 24px }
-.tg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 1240px; margin: 0 auto }
-.tc {
-  padding: 34px;
-  opacity: 0; transform: translateY(50px);
-  transition: transform .4s;
+#testimonials{padding:100px 0;background:var(--bg2)}
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.test-card{
+  padding:32px 26px;
+  background:var(--white);border:2px solid var(--border);border-radius:var(--r);
+  box-shadow:var(--clay);opacity:0;transform:translateY(40px);
+  transition:transform .3s,box-shadow .3s;cursor:default;
 }
-.tc:hover { transform: translateY(-6px) !important }
-.stars { font-size: .82rem; letter-spacing: 3px; margin-bottom: 18px; background: linear-gradient(90deg, rgba(255,180,0,.9), rgba(255,80,160,.7)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text }
-.ttext { font-size: .88rem; line-height: 1.78; color: var(--m); margin-bottom: 26px; font-weight: 300; font-style: italic }
-.tauth { display: flex; align-items: center; gap: 12px }
-.tav { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .8rem; border: 1px solid rgba(255,255,255,.15) }
-.tname { font-weight: 600; font-size: .86rem }
-.trole { color: var(--m); font-size: .76rem; margin-top: 2px; font-weight: 300 }
+.test-card:hover{transform:translateY(-5px) !important;box-shadow:var(--clay-hover)}
+.test-stars{
+  display:flex;gap:3px;margin-bottom:14px;
+}
+.star{
+  width:16px;height:16px;
+  background:linear-gradient(135deg,var(--yellow),var(--peach));
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+}
+.test-text{font-size:.88rem;line-height:1.72;color:var(--muted);margin-bottom:22px;font-weight:400;font-style:italic}
+.test-author{display:flex;align-items:center;gap:12px}
+.test-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.test-name{font-weight:700;font-size:.88rem;color:var(--text)}
+.test-role{font-size:.76rem;color:var(--muted);font-weight:400}
 
 /* ══ CTA ══ */
-#cta { padding: 130px 24px; text-align: center }
-.cta-wrap {
-  max-width: 820px; margin: 0 auto; padding: 90px 60px; border-radius: 32px;
-  opacity: 0; transform: translateY(60px) scale(.96);
-  transition: opacity .8s, transform .8s cubic-bezier(.16,1,.3,1);
-  position: relative;
+#cta{padding:100px 0}
+.cta-card{
+  text-align:center;padding:80px 48px;
+  background:linear-gradient(135deg,var(--purple-xl),var(--pink-xl));
+  border:2px solid var(--purple-l);border-radius:var(--r-lg);
+  box-shadow:var(--clay);
+  opacity:0;transform:translateY(40px);
+  position:relative;overflow:hidden;
 }
-.cta-wrap.visible { opacity: 1; transform: none }
-.cta-blob {
-  position: absolute; inset: 0; border-radius: 32px; overflow: hidden; pointer-events: none; z-index: 0;
+.cta-card::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(233,213,255,.8),transparent 70%);
 }
-.cta-blob::before {
-  content: ''; position: absolute; width: 400px; height: 400px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(120,80,255,.35) 0%, transparent 70%);
-  top: -100px; left: -100px; animation: blobFloat 18s infinite;
+.cta-card::after{
+  content:'';position:absolute;bottom:-40px;left:-40px;
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(251,207,232,.7),transparent 70%);
 }
-.cta-blob::after {
-  content: ''; position: absolute; width: 350px; height: 350px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,200,255,.25) 0%, transparent 70%);
-  bottom: -80px; right: -80px; animation: blobFloat 24s infinite reverse;
+.cta-card h2{margin-bottom:14px;position:relative}
+.cta-card .sub{margin-bottom:36px;position:relative}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.cta-stores{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.store-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:12px;
+  background:rgba(255,255,255,.7);border:2px solid var(--border);
+  font-size:.8rem;font-weight:600;color:var(--text);cursor:pointer;
+  box-shadow:var(--clay);transition:transform .2s,box-shadow .2s;
+  text-decoration:none;
 }
-.cta-inner { position: relative; z-index: 1 }
-.cta-inner h2 { font-size: clamp(2.2rem, 4.5vw, 3.4rem); margin-bottom: 16px }
-.cta-inner p { color: var(--m); margin-bottom: 42px; font-size: .98rem; font-weight: 300 }
-.cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap }
+.store-btn:hover{transform:translateY(-2px);box-shadow:var(--clay-hover)}
 
 /* ══ FOOTER ══ */
-footer { padding: 52px 24px 36px; border-top: 1px solid rgba(255,255,255,.07); position: relative; z-index: 2 }
-.fi { max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px }
-.fcp { color: var(--m); font-size: .8rem; font-weight: 300 }
-.flinks { display: flex; gap: 20px }
-.flinks a { color: var(--m); font-size: .8rem; text-decoration: none; transition: color .2s; cursor: none; font-weight: 300 }
-.flinks a:hover { color: var(--t) }
-
-/* ── Split text ── */
-.sw { display: inline-block; overflow: hidden; vertical-align: bottom }
-.swi { display: inline-block; transform: translateY(115%) skewY(5deg); transition: transform .75s cubic-bezier(.16,1,.3,1) }
-.sw.on .swi { transform: none }
-
-/* ── Visible ── */
-.visible { opacity: 1 !important; transform: none !important }
-
-/* ── Ripple ── */
-.ripple {
-  position: fixed; border-radius: 50%; pointer-events: none; z-index: 9990;
-  background: radial-gradient(circle, rgba(255,255,255,.15), transparent 70%);
-  transform: scale(0); animation: rippleOut .8s ease-out forwards;
+footer{
+  padding:48px 24px 32px;
+  border-top:2px solid var(--border);
+  background:var(--white);
 }
-@keyframes rippleOut { to { transform: scale(1); opacity: 0 } }
-
-/* ── Responsive ── */
-@media(max-width:900px) {
-  .sg { grid-template-columns: repeat(2, 1fr) }
-  .svg { grid-template-columns: 1fr }
-  .wg { grid-template-columns: 1fr }
-  .wc:first-child { grid-column: span 1 }
-  .tg { grid-template-columns: 1fr }
-  .cta-wrap { padding: 56px 28px }
-  .nav-links { display: none }
-  #dots { display: none }
+.footer-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;
 }
-@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration: .01ms !important; transition-duration: .01ms !important } }
+.footer-copy{color:var(--muted);font-size:.82rem;font-weight:400}
+.footer-links{display:flex;gap:20px}
+.footer-links a{color:var(--muted);font-size:.82rem;text-decoration:none;cursor:pointer;transition:color .2s;font-weight:500}
+.footer-links a:hover{color:var(--purple)}
+
+/* ══ SCROLL ANIMATIONS ══ */
+.fade-up{opacity:0;transform:translateY(40px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.fade-left{opacity:0;transform:translateX(-40px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.fade-right{opacity:0;transform:translateX(40px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.visible{opacity:1 !important;transform:none !important}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;gap:40px}
+  .hero-demo{order:-1}
+  .feat-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr;gap:16px}
+  .steps::before{display:none}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .demo-section-inner{grid-template-columns:1fr;gap:40px}
+  .test-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .cta-card{padding:48px 24px}
+}
+
+/* ══ PREFERS-REDUCED-MOTION ══ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .blob,.streak-badge{animation:none !important}
+}
 </style>
 </head>
 <body>
 
 <div id="sb"></div>
-<div id="cur"></div>
-<div id="cring"></div>
-
-<!-- Background blobs -->
-<div class="blobs" aria-hidden="true">
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-  <div class="blob b3"></div>
-  <div class="blob b4"></div>
-  <div class="blob b5"></div>
-</div>
-
-<!-- Side dots -->
-<div id="dots" aria-hidden="true">
-  <div class="dot on" data-s="hero"></div>
-  <div class="dot" data-s="stats"></div>
-  <div class="dot" data-s="services"></div>
-  <div class="dot" data-s="work"></div>
-  <div class="dot" data-s="process"></div>
-  <div class="dot" data-s="testimonials"></div>
-  <div class="dot" data-s="cta"></div>
-</div>
+<div id="confetti-container" aria-hidden="true"></div>
 
 <!-- Nav -->
 <nav id="nb" role="navigation" aria-label="Main navigation">
-  <div class="nav-glass"></div>
-  <div class="nav-inner">
-    <div class="logo">Lumina</div>
-    <ul class="nav-links">
-      <li><a href="#services">Services</a></li>
-      <li><a href="#work">Work</a></li>
-      <li><a href="#process">Process</a></li>
-      <li><a href="#testimonials">Clients</a></li>
-    </ul>
-    <button class="nbtn" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Start a project</button>
+  <div class="nav-logo">
+    <div class="nav-logo-icon" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+    </div>
+    HabitFlow
   </div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <button class="nbtn" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Get started free</button>
 </nav>
 
 <!-- Hero -->
 <section id="hero">
-  <div class="hero-grid" aria-hidden="true"></div>
-  <canvas id="ripple-canvas" aria-hidden="true"></canvas>
+  <div class="hero-blob hb1" aria-hidden="true"></div>
+  <div class="hero-blob hb2" aria-hidden="true"></div>
+  <div class="hero-blob hb3" aria-hidden="true"></div>
 
-  <!-- Morphing blob SVG -->
-  <svg id="morph-blob" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <defs>
-      <radialGradient id="blobGrad" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="rgba(120,80,255,.6)"/>
-        <stop offset="40%" stop-color="rgba(0,200,255,.4)"/>
-        <stop offset="100%" stop-color="transparent"/>
-      </radialGradient>
-    </defs>
-    <path id="blob-path" fill="url(#blobGrad)"/>
-  </svg>
-
-  <div class="hero-content">
-    <div class="hbadge">
-      <span class="hbadge-pill">New</span>
-      Award-winning creative studio
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">
+        <span class="badge-dot" aria-hidden="true"></span>
+        Now with AI coaching
+      </div>
+      <h1>Build habits<br>that <span class="h1-accent">actually stick</span></h1>
+      <p class="hero-sub">Track your daily habits, celebrate streaks, and finally become the person you want to be — one small step at a time.</p>
+      <div class="hero-btns">
+        <a href="#cta" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Start for free
+        </a>
+        <a href="#demo" class="btn-outline">See it in action</a>
+      </div>
+      <div class="hero-social" aria-label="Social proof">
+        <div class="avatar-stack" aria-hidden="true">
+          <div class="avatar" style="background:linear-gradient(135deg,#A855F7,#EC4899)">A</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#10B981,#60A5FA)">M</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#FB923C,#FBBF24)">S</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#EC4899,#A855F7)">J</div>
+        </div>
+        <span>Joined by <strong>40,000+</strong> people this month</span>
+      </div>
     </div>
-    <h1>
-      We make the<br>
-      <span class="h1-glass">internet beautiful</span>
-    </h1>
-    <p class="hero-sub">A creative studio blending design, code, and motion into digital experiences that stop people mid-scroll and make them stay.</p>
-    <div class="hbtns">
-      <a href="#work" class="btn-glass btn-filled">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        View our work
-      </a>
-      <a href="#cta" class="btn-glass">Get in touch</a>
+
+    <!-- Interactive demo card -->
+    <div class="hero-demo">
+      <div class="streak-badge" aria-label="21 day streak">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
+        21 day streak!
+      </div>
+      <div class="demo-card">
+        <div class="demo-header">
+          <div class="demo-title">Today's Habits</div>
+          <div class="demo-date" id="demo-date">Monday</div>
+        </div>
+        <!-- Week -->
+        <div class="week-row" id="week-row" aria-label="Week progress">
+          <div class="week-dot done" aria-label="Monday done">M</div>
+          <div class="week-dot done" aria-label="Tuesday done">T</div>
+          <div class="week-dot done" aria-label="Wednesday done">W</div>
+          <div class="week-dot done" aria-label="Thursday done">T</div>
+          <div class="week-dot today" aria-label="Friday today">F</div>
+          <div class="week-dot" aria-label="Saturday">S</div>
+          <div class="week-dot" aria-label="Sunday">S</div>
+        </div>
+        <!-- Habits -->
+        <div class="habits-list" id="habits-list">
+          <div class="habit-row" role="checkbox" aria-checked="false" tabindex="0" data-habit="0">
+            <div class="habit-icon" style="background:var(--purple-xl)" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div class="habit-info">
+              <div class="habit-name">Morning meditation</div>
+              <div class="habit-meta">10 min · Every day</div>
+            </div>
+            <div class="habit-streak" aria-label="21 day streak">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--peach)" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
+              21d
+            </div>
+            <div class="habit-check" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+          </div>
+          <div class="habit-row" role="checkbox" aria-checked="false" tabindex="0" data-habit="1">
+            <div class="habit-icon" style="background:var(--green-l)" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div class="habit-info">
+              <div class="habit-name">30 min exercise</div>
+              <div class="habit-meta">Fitness · Every day</div>
+            </div>
+            <div class="habit-streak" aria-label="14 day streak">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--peach)" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
+              14d
+            </div>
+            <div class="habit-check" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+          </div>
+          <div class="habit-row" role="checkbox" aria-checked="false" tabindex="0" data-habit="2">
+            <div class="habit-icon" style="background:var(--blue-l)" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div class="habit-info">
+              <div class="habit-name">Read 20 pages</div>
+              <div class="habit-meta">Learning · Every day</div>
+            </div>
+            <div class="habit-streak" aria-label="7 day streak">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--peach)" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
+              7d
+            </div>
+            <div class="habit-check" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+          </div>
+          <div class="habit-row" role="checkbox" aria-checked="false" tabindex="0" data-habit="3">
+            <div class="habit-icon" style="background:var(--peach-l)" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--peach)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="habit-info">
+              <div class="habit-name">Drink 2L water</div>
+              <div class="habit-meta">Health · Every day</div>
+            </div>
+            <div class="habit-streak" aria-label="5 day streak">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="var(--peach)" aria-hidden="true"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
+              5d
+            </div>
+            <div class="habit-check" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="demo-progress">
+          <div class="progress-label">
+            <span class="progress-text">Daily progress</span>
+            <span class="progress-pct" id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="hscroll" aria-hidden="true"><div class="hline"></div><span>Scroll</span></div>
 </section>
 
 <!-- Marquee -->
-<div class="mq" aria-hidden="true">
+<div class="mq-wrap" aria-hidden="true">
   <div class="mq-track">
-    <span class="mq-item">Brand Identity <span class="mq-gem"></span></span>
-    <span class="mq-item">Web Design <span class="mq-gem"></span></span>
-    <span class="mq-item">Motion Design <span class="mq-gem"></span></span>
-    <span class="mq-item">UX Research <span class="mq-gem"></span></span>
-    <span class="mq-item">3D Experiences <span class="mq-gem"></span></span>
-    <span class="mq-item">Design Systems <span class="mq-gem"></span></span>
-    <span class="mq-item">E-Commerce <span class="mq-gem"></span></span>
-    <span class="mq-item">Brand Identity <span class="mq-gem"></span></span>
-    <span class="mq-item">Web Design <span class="mq-gem"></span></span>
-    <span class="mq-item">Motion Design <span class="mq-gem"></span></span>
-    <span class="mq-item">UX Research <span class="mq-gem"></span></span>
-    <span class="mq-item">3D Experiences <span class="mq-gem"></span></span>
-    <span class="mq-item">Design Systems <span class="mq-gem"></span></span>
-    <span class="mq-item">E-Commerce <span class="mq-gem"></span></span>
+    <span class="mq-item">Daily streaks <span class="mq-dot"></span></span>
+    <span class="mq-item">Habit stacking <span class="mq-dot"></span></span>
+    <span class="mq-item">AI coaching <span class="mq-dot"></span></span>
+    <span class="mq-item">Progress charts <span class="mq-dot"></span></span>
+    <span class="mq-item">Smart reminders <span class="mq-dot"></span></span>
+    <span class="mq-item">Friend challenges <span class="mq-dot"></span></span>
+    <span class="mq-item">Weekly reviews <span class="mq-dot"></span></span>
+    <span class="mq-item">Daily streaks <span class="mq-dot"></span></span>
+    <span class="mq-item">Habit stacking <span class="mq-dot"></span></span>
+    <span class="mq-item">AI coaching <span class="mq-dot"></span></span>
+    <span class="mq-item">Progress charts <span class="mq-dot"></span></span>
+    <span class="mq-item">Smart reminders <span class="mq-dot"></span></span>
+    <span class="mq-item">Friend challenges <span class="mq-dot"></span></span>
+    <span class="mq-item">Weekly reviews <span class="mq-dot"></span></span>
   </div>
 </div>
 
+<!-- Features -->
+<section id="features">
+  <div class="section-wrap">
+    <div class="section-head">
+      <div class="stag fade-up">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Features
+      </div>
+      <h2 class="fade-up">Everything you need<br>to build great habits</h2>
+      <p class="sub fade-up">Simple, beautiful tools that make showing up every day feel rewarding — not like a chore.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--purple-xl)" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+        </div>
+        <h3>One-tap check-ins</h3>
+        <p>Mark habits done in a single tap. Satisfying animations celebrate every completion and keep you motivated to keep going.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--peach-l)" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--peach)" stroke-width="2"><path d="M12 2C9 7 4 8 4 13a8 8 0 0 0 16 0c0-5-5-6-8-11z"/></svg>
+        </div>
+        <h3>Streak tracking</h3>
+        <p>Watch your streaks grow day by day. Lose your streak and it resets — the perfect motivator to never miss a day again.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--green-l)" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h3>Progress insights</h3>
+        <p>Beautiful charts show your completion rates, best streaks, and patterns — helping you understand yourself better over time.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--blue-l)" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        </div>
+        <h3>Smart reminders</h3>
+        <p>Gentle nudges at exactly the right time. HabitFlow learns when you're most likely to complete habits and reminds you then.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--yellow-l)" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Friend challenges</h3>
+        <p>Invite friends and compete on shared habits. A little friendly competition is the best accountability partner you'll ever have.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--pink-xl)" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+        </div>
+        <h3>AI coaching</h3>
+        <p>Get personalized advice based on your habit data. Your AI coach identifies patterns and suggests improvements unique to you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section id="how">
+  <div class="section-wrap">
+    <div class="section-head">
+      <div class="stag fade-up" style="background:var(--green-l);border-color:rgba(16,185,129,.3);color:var(--green)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" aria-hidden="true"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+        Simple process
+      </div>
+      <h2 class="fade-up">Up and running<br>in 3 minutes</h2>
+      <p class="sub fade-up">No complicated setup. No overwhelm. Just pick your habits and start building the life you want.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num" aria-hidden="true">1</div>
+        <h3>Pick your habits</h3>
+        <p>Choose from 200+ proven habits or create your own. Set your goals and how often you want to do them.</p>
+      </div>
+      <div class="step">
+        <div class="step-num" aria-hidden="true">2</div>
+        <h3>Check in daily</h3>
+        <p>Open the app each day and tap to mark habits done. Watch the satisfying animations as your progress grows.</p>
+      </div>
+      <div class="step">
+        <div class="step-num" aria-hidden="true">3</div>
+        <h3>Build momentum</h3>
+        <p>Streaks compound. Weeks turn into months. One small habit at a time, you become who you want to be.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Stats -->
-<section id="stats" aria-label="Statistics">
-  <div class="sg">
-    <div class="sc glass glass-shimmer"><div class="snum"><span class="cnt" data-t="127">0</span><span class="ssfx">+</span></div><div class="slbl">Projects delivered</div></div>
-    <div class="sc glass glass-shimmer"><div class="snum"><span class="cnt" data-t="98">0</span><span class="ssfx">%</span></div><div class="slbl">Client satisfaction</div></div>
-    <div class="sc glass glass-shimmer"><div class="snum"><span class="cnt" data-t="12">0</span><span class="ssfx">+</span></div><div class="slbl">Years of mastery</div></div>
-    <div class="sc glass glass-shimmer"><div class="snum"><span class="cnt" data-t="24">0</span></div><div class="slbl">Industry awards</div></div>
-  </div>
-</section>
-
-<!-- Services -->
-<section id="services" aria-labelledby="sv-h">
-  <div class="sh">
-    <div class="stag">What we do</div>
-    <div class="ldraw"></div>
-    <h2 id="sv-h" class="sh2">Services that<br>move the needle</h2>
-    <p class="ssub">From concept to code — experiences that captivate and convert.</p>
-  </div>
-  <div class="svg">
-    <div class="svc glass glass-glow glass-shimmer">
-      <div class="sico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(180,150,255,.9)" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
-      <h3>Brand Identity</h3>
-      <p>Strategic brand systems built for scale. Visual identities that communicate your values at a glance and stand the test of time.</p>
-    </div>
-    <div class="svc glass glass-glow glass-shimmer">
-      <div class="sico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(100,220,255,.9)" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-      <h3>Web Design & Dev</h3>
-      <p>Pixel-perfect interfaces engineered for performance. Every interaction intentional, every animation purposeful.</p>
-    </div>
-    <div class="svc glass glass-glow glass-shimmer">
-      <div class="sico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,150,200,.9)" stroke-width="1.8"><path d="M12 2a9 9 0 1 0 0 18A9 9 0 0 0 12 2z"/><path d="M2 12h20"/><path d="M12 2c-4 4-4 16 0 20M12 2c4 4 4 16 0 20" opacity=".4"/></svg></div>
-      <h3>Digital Strategy</h3>
-      <p>Data-driven strategies aligning business goals with user needs, turning visitors into loyal advocates.</p>
-    </div>
-    <div class="svc glass glass-glow glass-shimmer">
-      <div class="sico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,210,100,.9)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/></svg></div>
-      <h3>Motion & 3D</h3>
-      <p>Immersive motion and 3D experiences pushing the boundaries of what's possible in a browser.</p>
-    </div>
-    <div class="svc glass glass-glow glass-shimmer">
-      <div class="sico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(100,255,200,.9)" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-      <h3>UX Research</h3>
-      <p>Deep user research revealing hidden insights. We design for real humans, not whiteboard personas.</p>
-    </div>
-    <div class="svc glass glass-glow glass-shimmer">
-      <div class="sico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(180,150,255,.9)" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-      <h3>CMS & E-commerce</h3>
-      <p>Scalable content and commerce solutions designed to grow with your business, never against it.</p>
+<section id="stats">
+  <div class="section-wrap">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num"><span class="cnt" data-t="40">0</span><span class="stat-sfx">k+</span></div>
+        <div class="stat-lbl">Active users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num"><span class="cnt" data-t="3">0</span><span class="stat-sfx">M+</span></div>
+        <div class="stat-lbl">Habits checked off</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num"><span class="cnt" data-t="87">0</span><span class="stat-sfx">%</span></div>
+        <div class="stat-lbl">Stick after 30 days</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num"><span class="cnt" data-t="4">0</span><span class="stat-sfx">.9★</span></div>
+        <div class="stat-lbl">App store rating</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Work -->
-<section id="work" aria-labelledby="w-h">
-  <div class="sh">
-    <div class="stag">Selected work</div>
-    <div class="ldraw"></div>
-    <h2 id="w-h" class="sh2">Projects we're<br>proud of</h2>
-  </div>
-  <div class="wg">
-    <div class="wc glass">
-      <div class="wimg"><div class="wimgi" style="background:linear-gradient(135deg,rgba(60,20,140,.9),rgba(10,40,100,.9),rgba(0,60,80,.9));height:100%;display:flex;align-items:center;justify-content:center;">
-        <svg viewBox="0 0 500 200" width="440" height="176" xmlns="http://www.w3.org/2000/svg" style="opacity:.55"><defs><linearGradient id="ga" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(180,150,255,1)"/><stop offset="100%" stop-color="rgba(100,220,255,1)"/></linearGradient></defs><circle cx="120" cy="100" r="70" fill="none" stroke="url(#ga)" stroke-width="1" opacity=".5"/><circle cx="120" cy="100" r="45" fill="none" stroke="url(#ga)" stroke-width="1" opacity=".3"/><circle cx="250" cy="70" r="90" fill="none" stroke="rgba(255,150,200,.5)" stroke-width=".8" opacity=".4"/><path d="M60 100 Q130 35 250 100 Q370 165 440 80" stroke="url(#ga)" stroke-width="2.5" fill="none"/><path d="M70 140 Q170 80 280 120 Q360 148 450 95" stroke="rgba(255,150,200,.7)" stroke-width="1.5" fill="none" opacity=".5"/><circle cx="250" cy="100" r="5" fill="rgba(180,150,255,1)"/><circle cx="120" cy="100" r="3.5" fill="rgba(100,220,255,1)"/><circle cx="370" cy="90" r="3.5" fill="rgba(255,150,200,1)"/></svg>
-      </div></div>
-      <div class="wov"><div class="wtag">Brand + Web</div><div class="wtitle">Nebula Financial Platform</div></div>
-      <div class="warr" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></div>
-    </div>
-    <div class="wc glass">
-      <div class="wimg"><div class="wimgi" style="background:linear-gradient(135deg,rgba(40,10,60,.9),rgba(80,10,40,.9),rgba(10,10,60,.9));height:100%;display:flex;align-items:center;justify-content:center;">
-        <svg viewBox="0 0 240 200" width="220" height="183" xmlns="http://www.w3.org/2000/svg" style="opacity:.65"><defs><linearGradient id="gb" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(255,150,200,1)"/><stop offset="100%" stop-color="rgba(255,200,100,1)"/></linearGradient></defs><polygon points="120,22 185,62 185,138 120,178 55,138 55,62" fill="none" stroke="url(#gb)" stroke-width="1.5" opacity=".6"/><polygon points="120,54 152,74 152,114 120,134 88,114 88,74" fill="none" stroke="rgba(180,150,255,.7)" stroke-width="1" opacity=".5"/><circle cx="120" cy="100" r="22" fill="none" stroke="url(#gb)" stroke-width="2"/><circle cx="120" cy="100" r="6" fill="rgba(255,150,200,1)"/></svg>
-      </div></div>
-      <div class="wov"><div class="wtag">Identity</div><div class="wtitle">Prism AI Startup</div></div>
-      <div class="warr" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></div>
-    </div>
-    <div class="wc glass">
-      <div class="wimg"><div class="wimgi" style="background:linear-gradient(135deg,rgba(0,40,50,.9),rgba(0,10,60,.9),rgba(40,0,30,.9));height:100%;display:flex;align-items:center;justify-content:center;">
-        <svg viewBox="0 0 240 200" width="220" height="183" xmlns="http://www.w3.org/2000/svg" style="opacity:.65"><defs><linearGradient id="gc" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(100,220,255,1)"/><stop offset="100%" stop-color="rgba(180,150,255,1)"/></linearGradient></defs><rect x="30" y="42" width="180" height="116" rx="10" fill="none" stroke="url(#gc)" stroke-width="1.5" opacity=".5"/><rect x="46" y="58" width="60" height="36" rx="5" fill="rgba(100,220,255,.1)" stroke="rgba(100,220,255,.7)" stroke-width="1"/><rect x="122" y="58" width="60" height="36" rx="5" fill="rgba(180,150,255,.1)" stroke="rgba(180,150,255,.7)" stroke-width="1"/><rect x="46" y="106" width="136" height="9" rx="5" fill="rgba(255,255,255,.08)"/><rect x="46" y="124" width="96" height="9" rx="5" fill="rgba(255,255,255,.05)"/></svg>
-      </div></div>
-      <div class="wov"><div class="wtag">UX + Dev</div><div class="wtitle">Atlas SaaS Dashboard</div></div>
-      <div class="warr" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></div>
-    </div>
-    <div class="wc glass">
-      <div class="wimg"><div class="wimgi" style="background:linear-gradient(135deg,rgba(50,20,0,.9),rgba(50,40,0,.9),rgba(0,30,20,.9));height:100%;display:flex;align-items:center;justify-content:center;">
-        <svg viewBox="0 0 240 200" width="220" height="183" xmlns="http://www.w3.org/2000/svg" style="opacity:.65"><defs><linearGradient id="gd" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(255,200,80,1)"/><stop offset="100%" stop-color="rgba(255,120,180,1)"/></linearGradient></defs><circle cx="120" cy="100" r="80" fill="none" stroke="url(#gd)" stroke-width="1" opacity=".35"/><circle cx="120" cy="100" r="55" fill="none" stroke="url(#gd)" stroke-width="1" opacity=".3"/><circle cx="120" cy="100" r="32" fill="none" stroke="url(#gd)" stroke-width="1.5" opacity=".5"/><path d="M120 22 L120 100 L160 65" stroke="rgba(255,200,80,1)" stroke-width="2.2" fill="none"/><circle cx="120" cy="100" r="6" fill="rgba(255,200,80,1)"/></svg>
-      </div></div>
-      <div class="wov"><div class="wtag">Motion</div><div class="wtitle">Orion E-commerce</div></div>
-      <div class="warr" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></div>
-    </div>
-  </div>
-</section>
+<!-- Interactive Demo -->
+<section id="demo">
+  <div class="section-wrap">
+    <div class="demo-section-inner">
+      <div class="demo-text fade-left">
+        <div class="stag" style="background:var(--blue-l);border-color:rgba(96,165,250,.3);color:var(--blue)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Live demo
+        </div>
+        <h2>Try it yourself<br>right here</h2>
+        <p class="sub">Tap any habit below to mark it complete. Watch your progress ring fill up — and maybe earn a celebration.</p>
+        <div class="demo-features">
+          <div class="demo-feat">
+            <div class="demo-feat-icon" style="background:var(--purple-xl)" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div>
+              <div class="demo-feat-text">Instant feedback</div>
+              <div class="demo-feat-desc">Every tap triggers a satisfying animation</div>
+            </div>
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-icon" style="background:var(--peach-l)" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--peach)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <div>
+              <div class="demo-feat-text">Progress ring</div>
+              <div class="demo-feat-desc">Visual progress fills as you complete habits</div>
+            </div>
+          </div>
+          <div class="demo-feat">
+            <div class="demo-feat-icon" style="background:var(--green-l)" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+            </div>
+            <div>
+              <div class="demo-feat-text">Celebration burst</div>
+              <div class="demo-feat-desc">Complete all habits to see confetti!</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<!-- Process -->
-<section id="process" aria-labelledby="p-h">
-  <div class="sh">
-    <div class="stag">How we work</div>
-    <div class="ldraw"></div>
-    <h2 id="p-h" class="sh2">Our process</h2>
-    <p class="ssub">A proven four-step method delivering exceptional results, every time.</p>
-  </div>
-  <div class="pl" id="pl">
-    <div class="pi"><div class="pnum">01</div><div class="pcont"><h3>Discover & Define</h3><p>We immerse ourselves in your world — users, competitors, ambitions. Deep discovery sessions uncover what matters before a single pixel is designed.</p></div></div>
-    <div class="pi"><div class="pnum">02</div><div class="pcont"><h3>Concept & Design</h3><p>Multiple bold directions with rapid prototyping. We challenge assumptions and push for the unexpected — then refine ruthlessly until every detail sings.</p></div></div>
-    <div class="pi"><div class="pnum">03</div><div class="pcont"><h3>Build & Animate</h3><p>Production-ready code with obsessive attention to performance and accessibility. Animations that feel inevitable, never gratuitous.</p></div></div>
-    <div class="pi"><div class="pnum">04</div><div class="pcont"><h3>Launch & Evolve</h3><p>A launch is just the beginning. We monitor, measure, and iterate — turning real-world data into compounding improvements over time.</p></div></div>
+      <div class="ring-demo fade-right">
+        <!-- Progress ring -->
+        <div class="ring-wrap" aria-label="Progress ring showing habit completion">
+          <svg class="ring-svg" width="200" height="200" viewBox="0 0 200 200">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--purple)"/>
+                <stop offset="100%" stop-color="var(--pink)"/>
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="100" cy="100" r="90"/>
+            <circle class="ring-fill" id="ring-fill" cx="100" cy="100" r="90"/>
+          </svg>
+          <div class="ring-label">
+            <span class="ring-pct" id="ring-pct">0%</span>
+            <span class="ring-sub">complete</span>
+          </div>
+        </div>
+
+        <!-- Mini interactive habits -->
+        <div class="mini-habits" id="mini-habits">
+          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="0">
+            <div class="mh-left">
+              <div class="mh-dot" aria-hidden="true"></div>
+              <div class="mh-name">Meditate</div>
+            </div>
+            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:75%"></div></div>
+          </div>
+          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="1">
+            <div class="mh-left">
+              <div class="mh-dot" aria-hidden="true"></div>
+              <div class="mh-name">Exercise</div>
+            </div>
+            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:60%"></div></div>
+          </div>
+          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="2">
+            <div class="mh-left">
+              <div class="mh-dot" aria-hidden="true"></div>
+              <div class="mh-name">Read</div>
+            </div>
+            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:85%"></div></div>
+          </div>
+          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="3">
+            <div class="mh-left">
+              <div class="mh-dot" aria-hidden="true"></div>
+              <div class="mh-name">Hydrate</div>
+            </div>
+            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:50%"></div></div>
+          </div>
+          <div class="mini-habit" role="checkbox" aria-checked="false" tabindex="0" data-mi="4">
+            <div class="mh-left">
+              <div class="mh-dot" aria-hidden="true"></div>
+              <div class="mh-name">Journal</div>
+            </div>
+            <div class="mh-bar-wrap" aria-hidden="true"><div class="mh-bar" style="width:40%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- Testimonials -->
-<section id="testimonials" aria-labelledby="t-h">
-  <div class="sh">
-    <div class="stag">Client love</div>
-    <div class="ldraw"></div>
-    <h2 id="t-h" class="sh2">What they say</h2>
-  </div>
-  <div class="tg">
-    <div class="tc glass glass-shimmer">
-      <div class="stars" aria-label="5 stars">★★★★★</div>
-      <p class="ttext">"Lumina transformed our entire digital presence. The attention to detail and creative vision exceeded every expectation. Conversions are up 340%."</p>
-      <div class="tauth"><div class="tav" style="background:linear-gradient(135deg,rgba(120,80,255,.5),rgba(0,200,255,.5))">SR</div><div><div class="tname">Sofia Reyes</div><div class="trole">CEO, Nebula Financial</div></div></div>
+<section id="testimonials">
+  <div class="section-wrap">
+    <div class="section-head">
+      <div class="stag fade-up" style="background:var(--yellow-l);border-color:rgba(251,191,36,.4);color:#92400E">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--yellow)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Loved by users
+      </div>
+      <h2 class="fade-up">Real people,<br>real results</h2>
+      <p class="sub fade-up">Join 40,000+ people already building better habits with HabitFlow every day.</p>
     </div>
-    <div class="tc glass glass-shimmer">
-      <div class="stars" aria-label="5 stars">★★★★★</div>
-      <p class="ttext">"The most talented design team I've worked with in 15 years. They didn't just build a website — they built a growth engine. Our Series A closed at twice the ask."</p>
-      <div class="tauth"><div class="tav" style="background:linear-gradient(135deg,rgba(255,80,160,.5),rgba(255,180,0,.5))">MK</div><div><div class="tname">Marcus Kim</div><div class="trole">Founder, Prism AI</div></div></div>
-    </div>
-    <div class="tc glass glass-shimmer">
-      <div class="stars" aria-label="5 stars">★★★★★</div>
-      <p class="ttext">"Working with Lumina was the best investment we made last year. Fast, collaborative, and the quality is simply on another level. They just get it."</p>
-      <div class="tauth"><div class="tav" style="background:linear-gradient(135deg,rgba(0,200,255,.5),rgba(120,80,255,.5))">AJ</div><div><div class="tname">Amara Johnson</div><div class="trole">Head of Product, Atlas</div></div></div>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-stars" aria-label="5 stars">
+          <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        </div>
+        <p class="test-text">"I've tried every habit app out there. HabitFlow is the first one that actually stuck. The animations make checking off habits genuinely satisfying — I look forward to it!"</p>
+        <div class="test-author">
+          <div class="test-av" style="background:linear-gradient(135deg,var(--purple),var(--pink))">SR</div>
+          <div><div class="test-name">Sofia Reyes</div><div class="test-role">Yoga teacher · 89 day streak</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars" aria-label="5 stars">
+          <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        </div>
+        <p class="test-text">"The streak feature is incredibly motivating. I haven't missed a single workout in 4 months because I refuse to break the chain. Best investment in myself I've made."</p>
+        <div class="test-author">
+          <div class="test-av" style="background:linear-gradient(135deg,var(--green),var(--blue))">MK</div>
+          <div><div class="test-name">Marcus Kim</div><div class="test-role">Software engineer · 127 day streak</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars" aria-label="5 stars">
+          <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+        </div>
+        <p class="test-text">"As a therapist I recommend HabitFlow to my clients. The design is calming, the experience is gentle, and the progress tracking helps people actually see themselves growing."</p>
+        <div class="test-author">
+          <div class="test-av" style="background:linear-gradient(135deg,var(--peach),var(--yellow))">AJ</div>
+          <div><div class="test-name">Dr. Amara Johnson</div><div class="test-role">Therapist · 210 day streak</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
-<section id="cta" aria-labelledby="c-h">
-  <div class="cta-wrap glass">
-    <div class="cta-blob" aria-hidden="true"></div>
-    <div class="cta-inner">
-      <h2 id="c-h">Ready to build<br><span style="background:linear-gradient(120deg,rgba(180,150,255,1),rgba(100,220,255,1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">something great?</span></h2>
-      <p>Let's turn your vision into a digital experience people remember.</p>
+<section id="cta">
+  <div class="section-wrap">
+    <div class="cta-card">
+      <div class="stag fade-up" style="background:rgba(255,255,255,.7)">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Start today
+      </div>
+      <h2 class="fade-up">Your best self is<br><span class="h1-accent">one habit away</span></h2>
+      <p class="sub fade-up">Free forever for up to 5 habits. Premium unlocks unlimited habits, charts, and AI coaching.</p>
       <div class="cta-btns">
-        <a href="mailto:hello@luminastudio.co" class="btn-glass btn-filled">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.13 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.04 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 17z"/></svg>
-          Start a conversation
+        <a href="#" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Get started — it's free
         </a>
-        <a href="#work" class="btn-glass">See more work</a>
+      </div>
+      <div class="cta-stores">
+        <a href="#" class="store-btn" aria-label="Download on the App Store">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" aria-hidden="true"><path d="M9 7c0-1.1.9-2 2-2h2a2 2 0 0 1 2 2v1H9V7z"/><path d="M3 10h18v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10z"/></svg>
+          App Store
+        </a>
+        <a href="#" class="store-btn" aria-label="Get it on Google Play">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Google Play
+        </a>
+        <a href="#" class="store-btn" aria-label="Use on the web">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Use on web
+        </a>
       </div>
     </div>
   </div>
@@ -760,189 +1025,198 @@ footer { padding: 52px 24px 36px; border-top: 1px solid rgba(255,255,255,.07); p
 
 <!-- Footer -->
 <footer>
-  <div class="fi">
+  <div class="footer-inner">
     <div>
-      <div class="logo" style="font-size:1rem;margin-bottom:6px">Lumina Studio</div>
-      <div class="fcp">© 2025 Lumina Studio. All rights reserved.</div>
+      <div class="nav-logo" style="margin-bottom:6px">
+        <div class="nav-logo-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+        </div>
+        HabitFlow
+      </div>
+      <div class="footer-copy">© 2025 HabitFlow. Built with care for better habits.</div>
     </div>
-    <nav class="flinks" aria-label="Footer">
-      <a href="#services">Services</a>
-      <a href="#work">Work</a>
-      <a href="#process">Process</a>
-      <a href="mailto:hello@luminastudio.co">Contact</a>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#testimonials">Reviews</a>
+      <a href="mailto:hello@habitflow.app">Contact</a>
     </nav>
   </div>
 </footer>
 
 <script>
-/* ─ Cursor ─ */
-const cur=document.getElementById('cur'),cring=document.getElementById('cring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-(function ac(){
-  cur.style.transform=`translate(${mx-7}px,${my-7}px)`;
-  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
-  cring.style.transform=`translate(${rx-22}px,${ry-22}px)`;
-  requestAnimationFrame(ac);
-})();
-
-/* ─ Ripple on click ─ */
-document.addEventListener('click',e=>{
-  const r=document.createElement('div');
-  r.className='ripple';
-  const s=Math.max(window.innerWidth,window.innerHeight)*.8;
-  r.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-s/2}px;top:${e.clientY-s/2}px`;
-  document.body.appendChild(r);
-  setTimeout(()=>r.remove(),800);
-});
-
 /* ─ Scroll progress ─ */
-const sb=document.getElementById('sb'),nb=document.getElementById('nb');
-const secIds=['hero','stats','services','work','process','testimonials','cta'];
-const secs=secIds.map(id=>document.getElementById(id)).filter(Boolean);
-const dots=document.querySelectorAll('.dot');
-const navAs=document.querySelectorAll('.nav-links a');
+const sb = document.getElementById('sb');
+const nb = document.getElementById('nb');
+const secIds = ['hero','features','how','stats','demo','testimonials','cta'];
+const secs = secIds.map(id => document.getElementById(id)).filter(Boolean);
+const navAs = document.querySelectorAll('.nav-links a');
 
-function onScroll(){
-  const y=window.scrollY,H=document.body.scrollHeight-window.innerHeight;
-  sb.style.width=(y/H*100)+'%';
-  nb.classList.toggle('glow',y>60);
-  let cur2='hero';
-  secs.forEach(s=>{if(y>=s.offsetTop-220)cur2=s.id});
-  dots.forEach(d=>d.classList.toggle('on',d.dataset.s===cur2));
-  navAs.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur2));
-  /* orb parallax */
-  const blobs=document.querySelectorAll('.blob');
-  blobs[0].style.transform=`translateY(${y*.22}px)`;
-  blobs[1].style.transform=`translateY(${-y*.14}px)`;
-  blobs[2].style.transform=`translateY(${y*.08}px) translateX(${Math.sin(y/300)*35}px)`;
-  /* process active */
-  document.querySelectorAll('.pi').forEach(pi=>{
-    const r=pi.getBoundingClientRect();
-    pi.classList.toggle('active-step',r.top<window.innerHeight*.55&&r.bottom>80);
-  });
+window.addEventListener('scroll', () => {
+  const y = window.scrollY, H = document.body.scrollHeight - window.innerHeight;
+  sb.style.width = (y / H * 100) + '%';
+  let cur = 'hero';
+  secs.forEach(s => { if (y >= s.offsetTop - 200) cur = s.id; });
+  navAs.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur));
+}, { passive: true });
+
+/* ─ Set today's date ─ */
+const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+document.getElementById('demo-date').textContent = days[new Date().getDay()];
+
+/* ─ Hero habit check-off ─ */
+const totalHero = 4;
+let checkedHero = 0;
+
+function updateHeroProgress() {
+  const pct = Math.round(checkedHero / totalHero * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  const fill = document.getElementById('progress-fill');
+  fill.style.width = pct + '%';
+  fill.parentElement.setAttribute('aria-valuenow', pct);
+  if (checkedHero === totalHero) burst(document.getElementById('habits-list'));
 }
-window.addEventListener('scroll',onScroll,{passive:true});
 
-/* ─ Canvas ripple bg ─ */
-const rc=document.getElementById('ripple-canvas');
-const rctx=rc.getContext('2d');
-let RW,RH;
-function rresize(){RW=rc.width=rc.offsetWidth;RH=rc.height=rc.offsetHeight}
-rresize();window.addEventListener('resize',rresize,{passive:true});
-const waves=[];
-document.getElementById('hero').addEventListener('mousemove',e=>{
-  const rect=rc.getBoundingClientRect();
-  waves.push({x:e.clientX-rect.left,y:e.clientY-rect.top,r:0,a:1,speed:1.8});
-});
-(function drawRipple(){
-  rctx.clearRect(0,0,RW,RH);
-  for(let i=waves.length-1;i>=0;i--){
-    const w=waves[i];
-    rctx.beginPath();rctx.arc(w.x,w.y,w.r,0,Math.PI*2);
-    rctx.strokeStyle=`rgba(255,255,255,${w.a*.12})`;rctx.lineWidth=1.5;rctx.stroke();
-    w.r+=w.speed;w.a-=.012;if(w.a<=0)waves.splice(i,1);
+document.querySelectorAll('#habits-list .habit-row').forEach(row => {
+  function toggle() {
+    const wasChecked = row.classList.contains('checked');
+    row.classList.toggle('checked');
+    row.setAttribute('aria-checked', !wasChecked);
+    if (!wasChecked) { checkedHero++; burst(row); }
+    else { checkedHero = Math.max(0, checkedHero - 1); }
+    updateHeroProgress();
   }
-  requestAnimationFrame(drawRipple);
-})();
-
-/* ─ Morphing blob ─ */
-const blobPath=document.getElementById('blob-path');
-const blobs2=[
-  'M250,100 C310,60 370,120 340,180 C310,240 220,260 160,220 C100,180 80,110 120,70 C160,30 190,140 250,100',
-  'M250,100 C300,50 380,100 360,170 C340,240 230,270 165,230 C100,190 75,120 115,72 C155,24 200,150 250,100',
-  'M250,100 C290,45 375,95 358,172 C341,249 225,274 162,236 C99,198 70,130 110,78 C150,26 210,155 250,100',
-  'M250,100 C320,55 385,115 355,185 C325,255 215,265 155,225 C95,185 82,105 125,65 C168,25 180,145 250,100',
-];
-let bi=0;
-function morphBlob(){
-  blobPath.setAttribute('d',blobs2[bi]);
-  bi=(bi+1)%blobs2.length;
-}
-morphBlob();
-setInterval(()=>{
-  const next=blobs2[bi];
-  blobPath.style.transition='d 2s ease-in-out';
-  blobPath.setAttribute('d',next);
-  bi=(bi+1)%blobs2.length;
-},2800);
-
-/* ─ Split h2 ─ */
-document.querySelectorAll('.sh2').forEach(el=>{
-  const lines=el.innerHTML.split('<br>');
-  el.innerHTML=lines.map(ln=>
-    ln.trim().split(' ').map(w=>`<span class="sw"><span class="swi">${w}</span></span>`).join(' ')
-  ).join('<br>');
+  row.addEventListener('click', toggle);
+  row.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
 });
 
-/* ─ IO ─ */
-const io=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(!e.isIntersecting)return;
-    const el=e.target,d=Number(el.dataset.delay||0);
-    setTimeout(()=>{
-      el.classList.add('visible');
-      el.querySelectorAll('.sw').forEach((w,i)=>setTimeout(()=>w.classList.add('on'),i*70));
-    },d);
+/* ─ Mini habits in demo section ─ */
+const totalMini = 5;
+let checkedMini = 0;
+const circ = 2 * Math.PI * 90; // stroke-dasharray
+
+function updateRing() {
+  const pct = checkedMini / totalMini;
+  const offset = circ * (1 - pct);
+  document.getElementById('ring-fill').style.strokeDashoffset = offset;
+  document.getElementById('ring-pct').textContent = Math.round(pct * 100) + '%';
+  if (checkedMini === totalMini) {
+    setTimeout(() => burst(document.getElementById('mini-habits'), 80), 200);
+  }
+}
+updateRing();
+
+document.querySelectorAll('#mini-habits .mini-habit').forEach(mh => {
+  function toggleMini() {
+    const was = mh.classList.contains('done');
+    mh.classList.toggle('done');
+    mh.setAttribute('aria-checked', !was);
+    if (!was) { checkedMini++; }
+    else { checkedMini = Math.max(0, checkedMini - 1); }
+    updateRing();
+  }
+  mh.addEventListener('click', toggleMini);
+  mh.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleMini(); } });
+});
+
+/* ─ Confetti burst ─ */
+const colors = ['#A855F7','#EC4899','#10B981','#FB923C','#60A5FA','#FBBF24','#F9A8D4','#D1FAE5'];
+function burst(anchor, count = 40) {
+  const rect = anchor.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const container = document.getElementById('confetti-container');
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    const size = 6 + Math.random() * 8;
+    const angle = Math.random() * 360;
+    const dist = 80 + Math.random() * 160;
+    const dx = Math.cos(angle * Math.PI / 180) * dist;
+    const duration = 0.6 + Math.random() * 0.6;
+    p.style.cssText = `
+      left:${cx}px;top:${cy}px;
+      width:${size}px;height:${size}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius:${Math.random() > .5 ? '50%' : '3px'};
+      --dx:${dx}px;--rot:${Math.random() * 720}deg;
+      animation-duration:${duration}s;
+      animation-delay:${Math.random() * 0.15}s;
+    `;
+    container.appendChild(p);
+    setTimeout(() => p.remove(), (duration + 0.15) * 1000 + 100);
+  }
+}
+
+/* ─ IntersectionObserver scroll animations ─ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const delay = Number(el.dataset.delay || 0);
+    setTimeout(() => el.classList.add('visible'), delay);
     io.unobserve(el);
   });
-},{threshold:.08});
+}, { threshold: 0.1 });
 
-function obs(sel,base=0,st=100){
-  document.querySelectorAll(sel).forEach((el,i)=>{el.dataset.delay=base+i*st;io.observe(el)});
-}
-obs('.sc',0,80);obs('.svc',0,80);obs('.tc',0,100);obs('.pi',0,130);obs('.wc',0,130);
-['.stag','.ldraw','.ssub','.cta-wrap','.sh2'].forEach(s=>document.querySelectorAll(s).forEach(el=>io.observe(el)));
-
-/* process line */
-const pl=document.getElementById('pl');
-new IntersectionObserver(([e])=>{if(e.isIntersecting)pl.classList.add('vis')},{threshold:.1}).observe(pl);
-
-/* ─ Counter scramble ─ */
-function scramble(el){
-  const t=parseInt(el.dataset.t),dur=2200,s=performance.now();
-  (function step(n){
-    const p=Math.min((n-s)/dur,1),e2=1-Math.pow(1-p,3);
-    el.textContent=p<.7?Math.floor(Math.random()*t):Math.floor(e2*t);
-    if(p<1)requestAnimationFrame(step);else el.textContent=t;
-  })(s);
-}
-document.querySelectorAll('.cnt').forEach(el=>{
-  new IntersectionObserver(([e])=>{if(e.isIntersecting)scramble(el)},{threshold:.5}).observe(el);
-});
-
-/* ─ 3D tilt ─ */
-function tilt(sel,m=6){
-  document.querySelectorAll(sel).forEach(c=>{
-    c.addEventListener('mousemove',e=>{
-      const r=c.getBoundingClientRect();
-      const dx=(e.clientX-r.left-r.width/2)/(r.width/2);
-      const dy=(e.clientY-r.top-r.height/2)/(r.height/2);
-      c.style.transform=`translateY(-10px) rotateY(${dx*m}deg) rotateX(${-dy*m}deg)`;
-    });
-    c.addEventListener('mouseleave',()=>{c.style.transform=''});
+function observe(sel, base = 0, step = 90) {
+  document.querySelectorAll(sel).forEach((el, i) => {
+    el.dataset.delay = base + i * step;
+    io.observe(el);
   });
 }
-tilt('.svc',6);tilt('.tc',4);tilt('.sc',5);
 
-/* ─ Magnetic buttons ─ */
-document.querySelectorAll('.btn-glass,.nbtn').forEach(b=>{
-  b.addEventListener('mousemove',e=>{
-    const r=b.getBoundingClientRect();
-    b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.2}px,${(e.clientY-r.top-r.height/2)*.2}px)`;
+observe('.feat-card', 0, 80);
+observe('.stat-card', 0, 80);
+observe('.step', 0, 100);
+observe('.test-card', 0, 90);
+['.fade-up', '.fade-left', '.fade-right', '.cta-card', '.demo-text', '.ring-demo']
+  .forEach(s => document.querySelectorAll(s).forEach(el => io.observe(el)));
+
+/* ─ Counter animation ─ */
+function countUp(el) {
+  const target = parseFloat(el.dataset.t);
+  const dur = 1800;
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Number.isInteger(target) ? Math.floor(eased * target) : (eased * target).toFixed(1);
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target % 1 === 0 ? target : target.toFixed(1);
+  }
+  requestAnimationFrame(step);
+}
+const cntIO = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { countUp(e.target); cntIO.unobserve(e.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('.cnt').forEach(el => cntIO.observe(el));
+
+/* ─ Magnetic buttons (subtle, no cursor weirdness) ─ */
+document.querySelectorAll('.btn-primary, .btn-outline, .nbtn').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const dx = (e.clientX - r.left - r.width / 2) * .18;
+    const dy = (e.clientY - r.top - r.height / 2) * .18;
+    btn.style.transform = `translate(${dx}px,${dy}px)`;
   });
-  b.addEventListener('mouseleave',()=>{b.style.transform=''});
+  btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
 });
 
-/* ─ Dot nav ─ */
-dots.forEach(d=>{
-  d.addEventListener('click',()=>document.getElementById(d.dataset.s)?.scrollIntoView({behavior:'smooth'}));
+/* ─ Habit card tilt (light) ─ */
+document.querySelectorAll('.feat-card, .test-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const dx = (e.clientX - r.left - r.width / 2) / (r.width / 2);
+    const dy = (e.clientY - r.top - r.height / 2) / (r.height / 2);
+    card.style.transform = `translateY(-6px) rotateY(${dx * 4}deg) rotateX(${-dy * 4}deg)`;
+    card.style.transformStyle = 'preserve-3d';
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
 });
 
-/* ─ Hero grid parallax ─ */
-window.addEventListener('scroll',()=>{
-  document.querySelector('.hero-grid').style.transform=`translateY(${window.scrollY*.35}px)`;
-},{passive:true});
+/* ─ Demo ring ring-fill circumference ─ */
+document.getElementById('ring-fill').style.strokeDasharray = circ;
 </script>
 </body>
 </html>
